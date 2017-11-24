@@ -1,0 +1,40 @@
+
+.l-foodheadouter_detail__headwrap{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
+}
+.l-customhead_detail{
+      height: 44px;
+      z-index: 1;
+      position: relative;
+}
+.customhead_detail__left{
+
+  left: 4px;
+    top: 0;
+    position: absolute;
+    box-sizing: content-box;
+
+}
+.ui-title{
+   margin-left: 44px;
+    padding-top: 9px;
+    line-height: 24px;
+    font-size: 17px;
+    color: #333333;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+
+
+}
+.customhead_detail__right{
+
+    top: 0;
+    right: 16px;
+    position: absolute;
+}
