@@ -9,8 +9,7 @@ const extractTxtplugin = new ExtractTextPlugin({
 module.exports = {
 	entry:{
     'app/Foods/index':'./src/app/Foods/index.js',
-    'app/Sight/sight':'./src/app/Sight/sight.js',
-    'publicResource/vender/vendor':['react','react-dom']
+    'app/Sight/sight':'./src/app/Sight/sight.js'
 	},
 	//devtool: 'cheap-eval-source-map',
 	output:{
@@ -70,20 +69,24 @@ module.exports = {
 		// 		except:['alert','console']
 		// 	}
 		// }),
+    new HtmlWebpackPlugin({
+      filename:'app/Foods/foods.html',
+      template:'src/app/Foods/foods.html',
+      chunks:['app/Foods/index','publicResource/vender/vendor','publicResource/css/common'],
+      hash:true
+
+    }),
 		new webpack.optimize.CommonsChunkPlugin({
-			name:'commonvendor',
-			filename:'vendor.js',
-			minChunks:2
+			name:'publicResource/css/common',
+			filename:'publicResource/vender/vendor.js',
+			minChunks: 2
+
 		}),
 		new webpack.BannerPlugin({
 			banner:'this is written by lhb'
 		}),
 		extractTxtplugin,
 		new webpack.HotModuleReplacementPlugin(),
-    new HtmlWebpackPlugin({
-        minify:false
-
-
-    })
+   
  	]
 };
