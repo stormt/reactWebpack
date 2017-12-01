@@ -11,7 +11,7 @@ module.exports = {
     'app/Foods/index':'./src/app/Foods/index.js',
     'app/Sight/sight':'./src/app/Sight/sight.js'
 	},
-	//devtool: 'cheap-eval-source-map',
+	devtool: 'cheap-eval-source-map',
 	output:{
 		filename:'[name].js',
 		path:path.resolve(__dirname,'dist'),
@@ -72,7 +72,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename:'app/Foods/foods.html',
       template:'src/app/Foods/foods.html',
-      chunks:['app/Foods/index','publicResource/vender/vendor','publicResource/css/common'],
+      chunks:['app/Foods/index','publicResource/css/common'],
       hash:true
 
     }),
@@ -87,6 +87,6 @@ module.exports = {
 		}),
 		extractTxtplugin,
 		new webpack.HotModuleReplacementPlugin(),
-   
+
  	]
 };

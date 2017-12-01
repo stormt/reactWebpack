@@ -1,1 +1,85 @@
+body {
+  height: 100%;
+  font-size:14px;
+  line-height:1.5;
+  //font-family: Arial , Roboto , 'Droid Sans' , 'Hiragino Sans GB' , STXihei , 'sans-serif' ;
+  color:#333;
+  background: #f0f1f5!important;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-overflow-scrolling: touch;
 
+}
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td, hr, button, article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section{
+    margin: 0;
+    padding: 0;
+}
+*:after,*:before{
+  box-sizing: border-box;
+}
+.foodwraper_detail{
+      position: absolute;
+      top: 0;
+      left: 0;
+      box-sizing: border-box;
+      overflow-y: auto;
+      overflow-x: hidden;
+      height: 100%;
+      width: 100%;
+}
+.food_detail{
+    padding-bottom: 49px;
+}
+.topmain{
+    width: 100%;
+    position: relative;
+}
+.topheadpic__imgshadow{
+    width: 100%;
+    padding-top: 23%;
+    position: absolute;
+    z-index: 2;
+    background: -webkit-linear-gradient(top, rgba(0,0,0,.5) 0%, rgba(0,0,0,0) 100%);
+    top: 0;
+    left: 0;
+}
+.autoheight{
+    width: 100%;
+    height: 0;
+    position: relative;
+    padding-bottom: 66.66%;
+    overflow: hidden;
+
+}
+.camara{
+    position: absolute;
+    width: auto;
+    height: 19px;
+    background-color: rgba(0, 0, 0, 0.6);
+    bottom: 0;
+    right: 0;
+    z-index: 3;
+    border-top-left-radius: 2px;
+
+}
+.camara span{
+  z-index: 5;
+  position: relative;
+  top: -1px;
+  left: 0;
+  height: 19px;
+  line-height: 19px;
+  color: #FFFFFF;
+  font-family: 'PingFangSC-Regular';
+  font-size: 12px;
+  opacity: 0.8;
+  text-align: center;
+  display: inline-block;
+  vertial-align: top;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.warper{
+  background-color: #ffffff;
+}

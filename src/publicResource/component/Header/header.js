@@ -8,19 +8,19 @@ export default class Header extends React.Component{
     }
 
     render(){
-      console.log(styleSheet);
+      let istransparent = this.props.transparent ? styleSheet.headercontainer : styleSheet.headercontainer +' '+ styleSheet.headercontainer__grey;
         return(
-          <div className={styleSheet['l-foodheadouter_detail__headwrap']} style={{opacity:1}}>
-						<div className={styleSheet['l-customhead_detail']}>
-							<div className={styleSheet.customhead_detail__left}>
-								<i className={styleSheet.common_iconfont +" " +styleSheet.ui_icon_back}></i>
+          <div className={istransparent} style={{opacity:this.props.opacity}}>
+						<div className={styleSheet.headercontainer_detail}>
+							<div className={styleSheet.headercontainer_detail__left}>
+								<i className={'common-iconfont'+' '+styleSheet.ui_back}>&#xe621;</i>
 							</div>
-							<div className={styleSheet.customhead_detail__center}>
-								<div className={styleSheet.ui_title}></div>
+							<div>
+								<div className={styleSheet.ui_title}>{this.props.title}</div>
 							</div>
-							<div className={styleSheet.customhead_detail__right}>
-								<i className={styleSheet.common_iconfont +" " + styleSheet.ui_icon_collect}></i>
-								<i className={styleSheet.common_iconfont +" " + styleSheet.ui_icon_share}></i>
+							<div className={styleSheet.headercontainer_detail__right}>
+								<i className="common-iconfont">&#xe62a;</i>
+								<i className="common-iconfont">&#xe62b;</i>
 							</div>
 						</div>
 					</div>

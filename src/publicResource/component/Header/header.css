@@ -1,26 +1,40 @@
 
-.l-foodheadouter_detail__headwrap{
+.headercontainer{
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 5;
 }
-.l-customhead_detail{
+.headercontainer__grey{
+
+    background: #fff;
+}
+.headercontainer__grey :global(.common-iconfont){
+    color: #444;
+    text-shadow: none;
+}
+.headercontainer_detail{
       height: 44px;
       z-index: 1;
       position: relative;
 }
-.customhead_detail__left{
+.ui_back{
+   width: 22px;
+    margin-top: 0;
+    padding: 0px 12px 11px 12px;
+    box-sizing: content-box;
+}
+.headercontainer_detail__left{
 
-  left: 4px;
+    left: 4px;
     top: 0;
     position: absolute;
     box-sizing: content-box;
 
 }
-.ui-title{
-   margin-left: 44px;
+.ui_title{
+    margin-left: 44px;
     padding-top: 9px;
     line-height: 24px;
     font-size: 17px;
@@ -29,12 +43,69 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-
-
 }
-.customhead_detail__right{
+
+.headercontainer_detail__right{
 
     top: 0;
     right: 16px;
     position: absolute;
+}
+:global(.common-iconfont){
+
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  text-align: center;
+  line-height: 22px;
+  margin-top: 11px;
+  color: #fff;
+  font-size: 17px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+:global(.common-iconfont:nth-child(n+2)){
+    margin-left: 16px;
+}
+:global(.swiper-pagination){
+  position: absolute;
+  text-align: center;
+  -webkit-transform: translate3d(0,0,0);
+  -ms-transform: translate3d(0,0,0);
+  -o-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
+  z-index: 10;
+  width: 100%;
+  left: 0;
+  bottom: 10px;
+}
+.swiper-pagination{
+  position: absolute;
+  text-align: center;
+  -webkit-transform: translate3d(0,0,0);
+  -ms-transform: translate3d(0,0,0);
+  -o-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
+  z-index: 10;
+  width: 100%;
+  left: 0;
+  bottom: 10px;
+
+}
+:global(.swiper-pagination-bullets){
+    line-height: 8px;
+    bottom: 9px;
+}
+:global(.swiper-pagination-bullet){
+    box-sizing: border-box;
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    border: 1px solid #fff;
+    margin: 0 3px;
+    opacity: 1;
+    display: inline-block;
+    background: transparent;
+}
+:global(.swiper-pagination-bullet-active){
+  background: #fff !important;
 }

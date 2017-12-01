@@ -1,25 +1,25 @@
 /*! this is written by lhb */
-webpackJsonp([0],{
+webpackJsonp([1],{
 
-/***/ 31:
+/***/ 37:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _react = __webpack_require__(2);
+var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(7);
+var _reactDom = __webpack_require__(2);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _header = __webpack_require__(15);
+var _header = __webpack_require__(17);
 
 var _header2 = _interopRequireDefault(_header);
 
-var _sight = __webpack_require__(32);
+var _sight = __webpack_require__(38);
 
 var _sight2 = _interopRequireDefault(_sight);
 
@@ -34,12 +34,12 @@ _reactDom2.default.render(_react2.default.createElement(_header2.default, null),
 
 /***/ }),
 
-/***/ 32:
+/***/ 38:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
-module.exports = {"sight__content":"_1ufrFYytxEUgpCAOQutm_h"};
+module.exports = {"sight__content":"iZxIalRI0qHMNpnuAHCh2"};
 
 /***/ })
 
-},[31]);
+},[37]);
