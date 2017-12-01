@@ -1,0 +1,1033 @@
+@using System.Configuration;
+<link rel="stylesheet" href="@ConfigurationManager.AppSettings["WebresourceBaseUrl"]build/common/swiper.css" type="text/css" />
+<script type="text/lizard-config">
+    {
+        "url_schema": ["foods/{{cityname=/\\D*/}}{{(int)cityid}}/{restId}.html","foods/restaurant/{restId}","foods/restaurant/{restId}.html","food/{{cityname=/\\D*/}}{{(int)cityid}}/{restId}.html", "foods/{{fromHotel=/hotelFoodsDetail/}}/{{cityname=/\\D*/}}{{(int)cityid}}/{restId}.html"],
+        "viewName": commonUtil.genViewName(),
+        "model": commonUtil.genModel({
+            "apis":[
+                {
+                url:'10332/GetRestaurantInfoV705',
+                postdata:{
+                    "RestaurantId": Lizard.P('restId'),
+                    "ImageQuality": (commonUtil.getImageQuality()||2),
+                    "CurrentDestId":(commonUtil.getLocalPosition().districtId||2),
+                    "Lon":(commonUtil.getLocalPosition().lng||0),
+                    "Lat":(commonUtil.getLocalPosition().lat||0),
+                    "Version": '7.04',
+                    "Platform": commonUtil.isApple() ? 1 : 2,
+                    "DistrictId":Lizard.P('cityid') && parseInt(Lizard.P('cityid').match(/\d*/)[0]),
+                    "MoblePhone":window.localStorage.getItem('kou_bei_telphone') || ''
+
+                    }
+                },{
+                     url:'10332/GetRestaurantInfoV705Extend',
+                     postdata:{
+                        "RestaurantId": Lizard.P('restId'),
+                        "ImageQuality": (commonUtil.getImageQuality()||2),
+                        "CurrentDestId":(commonUtil.getLocalPosition().districtId||2),
+                        "Lon":(commonUtil.getLocalPosition().lng||0),
+                        "Lat":(commonUtil.getLocalPosition().lat||0),
+                        "Version": '7.03',
+                        "Platform": commonUtil.isApple() ? 1 : 2
+                     }
+                }
+            ],
+            "filter":function (datas){
+                (function(){
+                    if(Lizard.isHybrid || Lizard.isInCtripApp || commonUtil.isHybridMode()){
+                        var cssNode = document.createElement('link');
+                        cssNode.rel = 'stylesheet';
+                        cssNode.type = 'text/css';
+                        cssNode.href = 'webresource/build/common/swiper.css ';
+                        document.head.appendChild(cssNode);
+                    }
+                })();
+                var rest = datas[0];
+                rest = _.extend(rest,datas[1]);
+                rest.isMslType = rest.RestaurantInfo.ShiMeiLinType > 0 ? true : false;
+                rest.isOldVersion = rest.RestaurantInfo.ShiMeiLinType > 0 ? false :true;
+                rest.RestaurantInfo.firstName = rest.RestaurantInfo.Name || rest.RestaurantInfo.SecondName;
+                rest.RestaurantInfo.secondName = rest.RestaurantInfo.SecondName || '';
+                rest.line_flag = !!(rest.RestaurantInfo.OpenTime ||
+                                rest.RestaurantInfo.FacilityNameList && rest.RestaurantInfo.FacilityNameList.length>0 ||
+                                rest.RestaurantInfo.SpecialTips ||
+                                rest.RestaurantInfo.PriceDesc||
+                                rest.RestaurantInfo.PaymentCardNameList && rest.RestaurantInfo.PaymentCardNameList.length>0 ||
+                                rest.RestaurantInfo.WeiXin ||
+                                rest.RestaurantInfo.Twitter ||
+                                rest.RestaurantInfo.Facebook ||
+                                rest.RestaurantInfo.WeiBo ||
+                                rest.RestaurantInfo.WebSite);
+                     console.log(rest.line_flag);
+                if(rest.RestaurantInfo){
+                    rest.RestaurantInfo.firstName = rest.RestaurantInfo.Name || rest.RestaurantInfo.SecondName;
+                    rest.RestaurantInfo.secondName = rest.RestaurantInfo.SecondName || '';
+                    rest.hasPlay = false;
+                    rest.hasBook = false;
+                    rest.hasTuan = false;
+                    if(rest.ProductList && rest.ProductList.length>0){
+                        _.each(rest.ProductList, function(item, index){
+                            var sourceType = (item.SourceType || '').replace(/(^\s*)|(\s*$)/g, "");
+                            if(sourceType && sourceType.length>0){
+                                if(sourceType == "Play"){
+                                    rest.hasPlay = true;
+                                }else if(sourceType == "Eztable" || sourceType == "DiningCity"){
+                                    rest.hasBook = true;
+                                    rest.RestaurantInfo.LinkUrl = item.LinkUrl || '';
+                                }else if(sourceType == 'HotelGroup'){
+                                    rest.hasTuan = true;
+                                }
+                            }
+                        });
+                    }
+                    rest.Comment = {};
+                }
+                rest.ggLat = rest.RestaurantInfo && rest.RestaurantInfo.GDCoord && rest.RestaurantInfo.GDCoord.Lat;
+                rest.ggLng = rest.RestaurantInfo && rest.RestaurantInfo.GDCoord && rest.RestaurantInfo.GDCoord.Lng;
+                if (rest.RestaurantInfo && rest.RestaurantInfo.GGCoord && rest.RestaurantInfo.GGCoord.MapImageUrl) {
+                    rest.mapurl = rest.RestaurantInfo.GGCoord.MapImageUrl;
+                } else {
+                    rest.mapurl = '';
+                }
+                rest.location = {
+                    lat : rest.RestaurantInfo && rest.RestaurantInfo.GDCoord && rest.RestaurantInfo.GDCoord.Lat,
+                    lng : rest.RestaurantInfo && rest.RestaurantInfo.GDCoord && rest.RestaurantInfo.GDCoord.Lng,
+                    name : rest.RestaurantInfo && rest.RestaurantInfo.Name,
+                    isoversea : rest.RestaurantInfo && rest.RestaurantInfo.IsOversea
+                };
+
+                return {
+                    rest:rest
+                };
+            },
+            setTDK: function(datas) { //只在SEO中有用， 来渲染title description keyword
+                var rest = datas[0];
+                rest = _.extend(rest,datas[1]);
+                var restaurantName = (rest && rest.RestaurantInfo)?rest.RestaurantInfo.Name:"";
+                var destination = rest && rest.RestaurantInfo && rest.RestaurantInfo.DistrictName || '';
+                return {
+                    title:  "{city}" +restaurantName+"电话/地址/菜系/点评/营业时间【携程攻略】",
+                    keywords: restaurantName+"电话,"+restaurantName+"地址,"+restaurantName+"菜系,"+restaurantName+"点评,"+restaurantName+"营业时间",
+                    description: "{city}" +restaurantName+"，携程攻略社区! 收集携程游友对{city}" +restaurantName+"餐馆的各种评价、印象、点评，包含"+restaurantName+"电话、地址、菜系、人均价格、营业时间等信息。要旅行，从携程攻略开始。",
+                };
+            }
+        }),
+        "view":{
+                "viewport": Lizard.T("viewportTmpl")
+            },
+        "controller": Lizard.webresourceBaseUrl + "js/Foods/Views/food.js"
+    }
+</script>
+<!-- 页面主模板 -->
+<script id="viewportTmpl" type="text/lizard-template">
+    <div class="l-foodheadouter_detail <%if(commonUtil.isIphoneX()){%> l-foodheadouter_detail--iosx <%}else if(commonUtil.isApple()){%> l-foodheadouter_detail--ios <%}%>">
+        <div class="l-foodheadouter_detail__headwrap js_transparent" style="opacity:1">
+            <div class="l-customhead_detail <%if(!rest.isMslType){%>nonmsl_detail_line<%}%>">
+                <div class="l-customhead_detail__left">
+                    <i class="common-iconfont ui-icon-back js_goback">&#xe621</i>
+                </div>
+                <div class="l-customhead_detail__center">
+                    <div class="ui-title"></div>
+                </div>
+                <% if(commonUtil.isHybridMode()){ %>
+                <% if(Lizard.P('fromHotel')!='hotelFoodsDetail' && Lizard.P('fromType')!='hotel'){ %>
+                <div class="l-customhead_detail__right">
+                    <i class="common-iconfont ui-icon-collect js_changefavstatus">&#xe629</i>
+                    <i class="common-iconfont ui-icon-share js_share">&#xe62b</i>
+                </div>
+                <%}%>
+                <%}%>
+            </div>
+        </div>
+        <div class="l-foodheadouter_detail__headwrap l-foodheadouter_detail__headwrap--white js_grey"style="opacity:0">
+            <div class="l-customhead_detail nonmsl_detail_line">
+                <div class="l-customhead_detail__left">
+                    <i class="common-iconfont ui-icon-back js_goback">&#xe621</i>
+                </div>
+                <div class="l-customhead_detail__center">
+                    <%if(commonUtil.isHybridMode()){%>
+                    <div class="ui-title js_title"><%if(rest.isMslType){%><%=rest.RestaurantInfo.Name %><%}%></div>
+                    <%}else{%>
+                    <div class="ui-title js_title"><%=rest.RestaurantInfo.Name %></div>
+                    <%}%>
+                </div>
+                <% if(commonUtil.isHybridMode()){ %>
+                <% if(Lizard.P('fromHotel')!='hotelFoodsDetail' && Lizard.P('fromType')!='hotel'){ %>
+                <div class="l-customhead_detail__right">
+                    <i class="common-iconfont ui-icon-collect js_changefavstatus">&#xe629</i>
+                    <i class="common-iconfont ui-icon-share js_share">&#xe62b</i>
+                </div>
+                <%}%>
+                <%}%>
+            </div>
+        </div>
+        <!--h5d大图模式需要的dom结构 强耦合！！-->
+        <section class="appue_scale photo_top_space">
+            <div class="js_close this_return"></div>
+            <div class="this_title"></div>
+            <ul class="this_img"></ul>
+            <div class="this_intro"></div>
+        </section>
+
+        <div class="l-sightheadouter__head-srollview food_detail">
+            <!-- 美食林和非美食林头部信息-->
+            <%if(rest.isMslType){%>
+            <section class="topmain">
+                <div class="l-topheadpic__imgshadow"></div>
+                <div class="bgimg <% if(Lizard.P('fromHotel')!='hotelFoodsDetail' && Lizard.P('fromType')!='hotel'){ %>jsimgbanner<%}%> jsimgbanner_wraper"></div>
+                <% if(rest.RestaurantInfo.OpenStatus && rest.RestaurantInfo.OpenStatusRemark){ %>
+                <div class="running-tips"></div>
+                <div class="overmasktransparent">
+                    <h2><%=rest.RestaurantInfo.OpenStatus%></h2>
+                    <h3 class="hide_runningtips marqueebackfoward"><%=rest.RestaurantInfo.OpenStatusRemark %></h3>
+                    <h4 class="marquee"><%=rest.RestaurantInfo.OpenStatusRemark %></h4>
+                </div>
+
+                <% } %>
+                <%if(rest.RestaurantInfo.ImageCount>0){ %>
+                <p class="camara"><span><%=rest.RestaurantInfo.ImageCount%>张</span></p>
+                <%}else if(commonUtil.isHybridMode()){%>
+                <p class="camara"><span>上传图片</span></p>
+                <%}%>
+            </section>
+            <%}else{%>
+            <% if(rest.RestaurantInfo.OpenStatus){ %>
+            <div class="s-running-tips" <%if(commonUtil.isApple()){%>style="top:64px;"<%}%>><%=rest.RestaurantInfo.OpenStatus %></div>
+        <% } %>
+        <section class="topmain" <%if(commonUtil.isIphoneX()){%> style="margin-top:88px" <%}else if(commonUtil.isApple()){%> style="margin-top:64px"<%}else{%> style="margin-top:44px"<%}%>>
+        <div class="l-modlist__item top_info_over">
+            <div class="c-listinnerwrap">
+                <div class="c-imgbox <% if(Lizard.P('fromHotel')!='hotelFoodsDetail' && Lizard.P('fromType')!='hotel'){ %>js_picclick<%}%> picclick">
+                    <%if(rest.RestaurantInfo.ImageCount>0){%>
+                    <span class="picnum_detail_nonmsl"><%=rest.RestaurantInfo.ImageCount%>张</span>
+                    <%}else if(commonUtil.isHybridMode()){%>
+                    <span class="picnum_detail_nonmsl">上传图片</span>
+                    <%}%>
+                    <img src="<%= rest.RestaurantInfo.CoverImageUrls[0] %>" />
+                </div>
+                <div class="c-textview  <% if(rest.RestaurantInfo.IsOversea && rest.RestaurantInfo.secondName && rest.RestaurantInfo.firstName != rest.RestaurantInfo.secondName) {%>c-textview--foodoversea<%}%>">
+                    <div class="c-textview__title ">
+                        <div class="c-textview__title--text "><span><%=rest.RestaurantInfo.firstName%></span></div>
+                    </div>
+                    <% if(rest.RestaurantInfo.IsOversea && rest.RestaurantInfo.secondName && rest.RestaurantInfo.firstName != rest.RestaurantInfo.secondName) {%>
+                    <div class="c-textview__ename "><%=rest.RestaurantInfo.secondName%></div>
+                    <%}%>
+                    <% if(rest.MeiShiLinChainTypeName){ %>
+                    <div class="c-textview__comment ">
+                        <div class="c-textview__comment--msltip "><%=rest.MeiShiLinChainTypeName%> · 分店</div>
+                    </div>
+                    <% }else if(rest.RestaurantInfo.CommentScore && rest.RestaurantInfo.CommentScore>0){%>
+                    <div class="c-textview__comment">
+                        <div class="c-textview__comment--score"><%=rest.RestaurantInfo.CommentScore%>分</div>
+                        <div class="c-textview__comment--count"><%=rest.RestaurantInfo.CommentCount%>条点评</div>
+                    </div>
+                    <%}%>
+                    <%if(rest.RestaurantInfo.Cuisine[0] || rest.RestaurantInfo.Labels[0] || rest.RestaurantInfo.KoubeiAmount){%>
+                    <div class="c-textview__tagbox">
+                        <% if(rest.RestaurantInfo.Cuisine[0]){ %>
+                        <i><%=rest.RestaurantInfo.Cuisine[0].Name%></i>
+                        <%}%>
+                        <% if(rest.RestaurantInfo.Labels[0]){ %>
+                        <i><%=rest.RestaurantInfo.Labels[0].Name%></i>
+                        <%}%>
+                        <% if(rest.RestaurantInfo.KoubeiAmount){%>
+                        <i>口碑人气<%=rest.RestaurantInfo.KoubeiAmount%></i>
+                        <%}%>
+                    </div>
+                    <%}%>
+                    <div class="c-textview__bottom">
+                        <% if(parseInt(rest.RestaurantInfo.AveragePrice)>0){ %>
+                        <span>人均&yen;<%=rest.RestaurantInfo.AveragePrice%></span><%if(rest.RestaurantInfo.LocalCurrency && rest.RestaurantInfo.LocalPrice){%><span><%=rest.RestaurantInfo.LocalCurrency%><%=rest.RestaurantInfo.LocalPrice%></span><%}%>
+                        <%}%>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </section>
+        <%}%>
+
+        <div class="warper">
+            <!-- 美食林餐厅-->
+            <% if(rest.isMslType){%>
+            <div class="res_info">
+                <div class="restinfo">
+                    <h3 <%if(rest.RestaurantInfo.secondName){%>class="oversea"<%}%>>
+                    <strong><%=rest.RestaurantInfo.firstName%></strong>
+                    <%if(rest.RestaurantInfo.secondName && rest.RestaurantInfo.firstName != rest.RestaurantInfo.secondName){%>
+                    <p><%=rest.RestaurantInfo.secondName%></p>
+                    <%}%>
+                    </h3>
+                    <div class="food_rating js_wraper_cuiname">
+                        <div class="js_scroll_cuiname">
+                            <%if(rest.RestaurantInfo.ShiMeiLinName){%><span class="staert"><%=rest.RestaurantInfo.ShiMeiLinName%></span><%}%><p><span class="cuilabels"><%=rest.RestaurantInfo.Cuisine[0] && rest.RestaurantInfo.Cuisine[0].Name%></span><%if(rest.RestaurantInfo.AveragePrice){%><span>人均&yen;<%=rest.RestaurantInfo.AveragePrice%></span><%}%><%if(rest.RestaurantInfo.LocalCurrency && rest.RestaurantInfo.LocalPrice){%><span class="oversea"><%= rest.RestaurantInfo.LocalCurrency%><%=rest.RestaurantInfo.LocalPrice %></span><%}%></p>
+                        </div>
+                    </div>
+                </div>
+                <% if(rest.VideoBanner && Lizard.P('fromType') !== 'external'){ %>
+                <div class="tdcp js_go_video" id="c_deep_article" data-poiid="<%= Lizard.P('restId') %>" data-link="<% if(!commonUtil.isHybridMode()){ %><%=rest.VideoBanner && rest.VideoBanner.LinkUrl %> <% }else{ %> <%=rest.VideoBanner && rest.VideoBanner.HybridUrl %> <% } %>"><span>探店测评</span></div>
+                <% } %>
+            </div>
+            <%}%>
+
+
+            <!-- 旅行者推荐-->
+            <!--无“评委评语”时，显示“旅行者推荐”-->
+            <%if(rest.Expert && rest.Expert.ImgUrl && rest.Expert.Introduction && rest.Expert.RecommendedReason){%>
+            <div class="mslls">
+                <div class="mslls_intro">
+                    <p class="ls"><%=rest.Expert.Name%>，<%=rest.Expert.Identity %></p>
+                    <p class="zhicheng"><%=rest.Expert.Introduction%></p>
+                </div>
+                <span>
+                    <img src="<%=rest.Expert.ImgUrl%>"/>
+                </span>
+            </div>
+            <div class="travelrecmd">
+                <p class="travelrecmd_comment"><%=rest.Expert.RecommendedReason%></p>
+            </div>
+            <%}else if(rest.RestaurantInfo.Feature){ %>
+            <div class="travelrecmd nonmslrec">
+                <p class="travelrecmd_comment"><span class="travelrecmd_nonmsl">旅行者推荐：<%=rest.RestaurantInfo.Feature%></span></p>
+            </div>
+            <% } %>
+            <!-- 导航和电话-->
+            <div class="nav">
+                <p class="navtext <%if(Lizard.P('fromType') !== 'external'){%>js_address<%}%>" id="c_address_top"><%= rest.RestaurantInfo.Address %></p>
+                <span class="navicons"><% if(commonUtil.isHybridMode() && Lizard.P('fromHotel')!='hotelFoodsDetail' && Lizard.P('fromType')!='hotel'){%><span class="js_navigation" id="c_guide_top">导航</span><%}%><%if(rest.RestaurantInfo.BookTelList && rest.RestaurantInfo.BookTelList.length){%><span class="js_jump_telpop" id="c_tel_top">电话</span><%}%></span>
+            </div>
+        </div>
+
+        <!--推荐菜-->
+        <%if(rest.RestaurantInfo.RestaurantRecommendedFoodList && rest.RestaurantInfo.RestaurantRecommendedFoodList.length > 0){ %>
+        <div class="recomdish">
+            <div  data-restid="<%=rest.RestaurantInfo.RestaurantId %>" class="title-detail">推荐菜</div>
+            <div class="remdishlist">
+                <% _.each(rest.RestaurantInfo.Foods,function(value,index){ %>
+                <%= value %><% if(index != rest.RestaurantInfo.Foods.length -1){ %>&emsp;<% } %><% }) %>
+            </div>
+            <div class="swiper-box"></div>
+            <% if(rest.Menus && rest.Menus.length>0){ %>
+            <div class="seemenu js_allMenu" id="c_recommend_all_food" data-restid="<%= rest.RestaurantInfo.RestaurantId%>">查看全部菜单</div>
+            <% } %>
+        </div>
+        <%}else if(rest.RestaurantInfo.Foods && rest.RestaurantInfo.Foods.length>0){%>
+        <div class="recomdish">
+            <div class="title-detail">推荐菜</div>
+            <div class="remdishlist">
+                <% rest.RestaurantInfo.Foods.some(function(v,i){
+                if(i >= 10)return false; %><%= v %><% if( (i< rest.RestaurantInfo.Foods.length-1) && ( i < 9 )){ %>&emsp;<% }});%>
+            </div>
+
+        </div>
+        <% } %>
+
+        <!-- ↓↓ 订座·套餐 ↓↓ -->
+        <% if(rest.ProductList && rest.ProductList.length>0 && Lizard.P('fromType') !== 'external'){%>
+        <div class="bookingpackage">
+            <%if(rest.hasBook){%>
+            <div class="title-detail">订座·特惠</div>
+            <%}else{%>
+            <div class="title-detail">特惠·套餐</div>
+            <%}%>
+            <% _.each(rest.ProductList,function(product,index){%>
+            <%if(index<3){%>
+            <div class="c-product js_packmodules_series" id="c_entertainment_hui_<%=index%>" data-sourcetype="<%=product.SourceType %>" data-hybridurl="<%=product.CommonField1%>" data-url="<%=product.LinkUrl%>" <%if(product.SourceType == 'DiningCity'){%>data-dnid="<%=product.Id%>"<%}%> <%if(product.SourceType == 'Koubei'){%>data-id="<%='I'+ product.Id%>" data-subid="<%='I'+ product.SubId%>"<%}%>>
+            <div class="c-product__item">
+                <div class="c-product__title <%if(product.SourceType == 'Opentable'){%>opentable_style<%}%>">
+                    <%=product.Title%>
+                    <%if(product.SourceType == 'Opentable'){%>
+                    <span>(<% if(rest.RestaurantInfo.BookingCount<=999){ %><%= rest.RestaurantInfo.BookingCount%><%}else{%>999+<%}%>人订过)</span>
+                    <%}%>
+                </div>
+                <%if(product.SourceType == 'Koubei'){%>
+                <div class="c-product__btag"><i>口碑优惠券</i></div>
+                <%}%>
+                <%if(product.SourceType == 'BankCard'){%>
+                <div class="c-product__btag"><i>携程白金卡特惠</i></div>
+                <%}%>
+
+                <%if(product.SourceType !== 'Eztable' && product.SourceType !== 'Opentable'){%>
+                <% if(product.CommentScore || product.SalesVolume){%>
+                <div class="c-product__notice"><%if(product.CommentScore>0){%><span class="c-product__notice--score"><%=product.CommentScore%>分</span><%}%><%if(product.SalesVolume){%><span class="c-product__notice--text"><%=product.SalesVolume%></span><%}%></div>
+                <%}else if(product.SubTitle){%>
+                <div class="c-product__notice">
+                    <span class="c-product__notice--text"><%=product.SubTitle %></span>
+                </div>
+                <%} %>
+                <%}else if(product.SourceType == 'Eztable'){%>
+                <div class="c-product__notice"><%if(rest.RestaurantInfo.BookingCount>0){%><span class="c-product__notice--text js_bookingnumber"><% if(rest.RestaurantInfo.BookingCount<=999){ %><%= rest.RestaurantInfo.BookingCount%><%}else{%>999+<%}%>人订过</span><%}%></div>
+                <%}else if(product.SourceType == 'Opentable'){%>
+                <div class="c-product__notice"><span class="c-product__notice--text">由opentable提供</span></div>
+                <%}%>
+            </div>
+            <div class="c-product__booking">
+                <%if(product.SourceType !== 'Eztable'){%>
+                <%if(product.SourceType !== 'Koubei'&& product.SourceType !== 'BankCard' && product.Price){%>
+                <div class="c-product__price">&yen;<em><%=product.Price%></em></div>
+                <%}%>
+                <%if(product.SourceType == 'Koubei'){ %>
+                <div class="booking_button">领取</div>
+                <% }else if(product.SourceType == 'BankCard'){ %>
+                <div class="booking_button">查看</div>
+                <%}else if(product.SourceType == 'DiningCity' || product.SourceType == 'Opentable'){%>
+                <div class="booking_button">预约</div>
+                <%}else{%>
+                <div class="booking_button">预订</div>
+                <%}%>
+                <%}else{%>
+                <div class="booking_button" data-linkurl="<%=rest.RestaurantInfo.LinkUrl%>" id="delicacies_detail_booking">预约</div>
+                <%}%>
+            </div>
+        </div>
+        <%}%>
+        <% });%>
+        <div class="js_packhidepart" style="height: 0;overflow: hidden;">
+            <% _.each(rest.ProductList,function(product,index){%>
+            <%if(index>2){%>
+            <div class="c-product js_itemPack js_packmodules_series" id="c_entertainment_hui_<%=index%>" data-sourcetype="<%=product.SourceType %>" data-hybridurl="<%=product.CommonField1%>" data-url="<%=product.LinkUrl%>" <%if(product.SourceType == 'DiningCity'){%>data-dnid="<%=product.Id%>"<%}%> <%if(product.SourceType == 'Koubei'){%>data-id="<%='I'+product.Id%>" data-subid="<%='I'+product.SubId%>"<%}%>>
+            <div class="c-product__item">
+                <div class="c-product__title">
+                    <%=product.Title%>
+                </div>
+                <%if(product.SourceType == 'Koubei'){%>
+                <div class="c-product__btag"><i>口碑优惠券</i></div>
+                <%}%>
+                <%if(product.SourceType == 'BankCard'){%>
+                <div class="c-product__btag"><i>携程白金卡特惠</i></div>
+                <%}%>
+                <% if(product.CommentScore || product.SalesVolume ){%>
+                <div class="c-product__notice"><%if(product.CommentScore>0){%><span class="c-product__notice--score"><%=product.CommentScore%>分</span><%}%><%if(product.SalesVolume){%><span class="c-product__notice--text"><%=product.SalesVolume%></span><%}%></div>
+                <%}else if(product.SubTitle){%>
+                <div class="c-product__notice">
+                    <span class="c-product__notice--text"><%=product.SubTitle %></span>
+                </div>
+                <%}%>
+            </div>
+            <div class="c-product__booking">
+                <%if(product.SourceType !== 'Koubei' && product.SourceType !== 'BankCard' && product.Price){%>
+                <div class="c-product__price">&yen;<em><%=product.Price%></em></div>
+                <%}%>
+                <%if(product.SourceType == 'Koubei'){ %>
+                <div class="booking_button">领取</div>
+                <% }else if(product.SourceType == 'BankCard'){ %>
+                <div class="booking_button">查看</div>
+                <%}else if(product.SourceType == 'DiningCity'){%>
+                <div class="booking_button">预约</div>
+                <%}else{%>
+                <div class="booking_button">预订</div>
+                <%}%>
+            </div>
+        </div>
+        <%}%>
+        <% });%>
+    </div>
+    <% if(rest.ProductList.length>3){%>
+    <div class="spreadmorepack js_spreadPackage">
+        展开更多套餐
+    </div>
+    <%}%>
+    </div>
+    <%}%>
+    <!-- ↑↑ 底部写点评加入行程 ↑↑ -->
+
+    <!--餐厅信息-->
+    <% if((rest.RestaurantInfo.OpenTime && rest.RestaurantInfo.OpenTime!= ' ') ||
+    rest.RestaurantInfo.FacilityNameList && rest.RestaurantInfo.FacilityNameList.length>0 ||
+    rest.RestaurantInfo.SpecialTips ||
+    rest.RestaurantInfo.PriceDesc ||
+    rest.RestaurantInfo.PaymentCardNameList && rest.RestaurantInfo.PaymentCardNameList.length>0 ||
+    rest.RestaurantInfo.WeiXin ||
+    rest.RestaurantInfo.Twitter ||
+    rest.RestaurantInfo.Facebook ||
+    rest.RestaurantInfo.WeiBo ||
+    (rest.BrandInfo && rest.BrandInfo.RestCount && rest.BrandInfo.RestCount > 0) ||
+    rest.RestaurantInfo.WebSite){ %>
+    <div class="restinfo detail_margin_top">
+        <% if((rest.RestaurantInfo.OpenTime && rest.RestaurantInfo.OpenTime!= ' ') ||
+        rest.RestaurantInfo.FacilityNameList && rest.RestaurantInfo.FacilityNameList.length>0 ||
+        rest.RestaurantInfo.SpecialTips ||
+        rest.RestaurantInfo.PriceDesc ||
+        rest.RestaurantInfo.PaymentCardNameList && rest.RestaurantInfo.PaymentCardNameList.length>0 ||
+        rest.RestaurantInfo.WeiXin ||
+        rest.RestaurantInfo.Twitter ||
+        rest.RestaurantInfo.Facebook ||
+        rest.RestaurantInfo.WeiBo ||
+        (rest.BrandInfo && rest.BrandInfo.RestCount && rest.BrandInfo.RestCount > 0 && Lizard.P('fromType') !== 'external') ||
+        rest.RestaurantInfo.WebSite){ %>
+        <div class="title-detail">餐厅信息</div>
+        <% } %>
+        <div class="d_mar">
+            <%if(rest.BrandInfo && rest.BrandInfo.RestCount && rest.BrandInfo.RestCount > 0){ %>
+            <div class="fendianortel <%if(Lizard.P('fromType') !== 'external'){%>js_chains_ress<%}%> <%if(rest.line_flag){%>detail_line<%}%> <%if(Lizard.P('fromType') == 'external'){%>cooperation_fendian<%}%>" data-id="<%=rest.BrandInfo.Id%>" data-districtid="<%=rest.RestaurantInfo.DistrictId%>">
+                <p class="<%if(rest.line_flag){%>bj<%}%>"><i class="icon-fendian"></i><%= rest.BrandInfo.RestCount %>家分店</p>
+            </div>
+            <% } %>
+            <% if(rest.RestaurantInfo.OpenTime && (rest.RestaurantInfo.OpenTime!= ' ')){ %>
+            <div class="icon_align_detail">
+                <i class="dot_detail"></i><%= commonUtil.formatBeforeShow(rest.RestaurantInfo.OpenTime) || '&nbsp;' %>
+            </div>
+            <% } %>
+
+            <% if(rest.RestaurantInfo.FacilityNameList && rest.RestaurantInfo.FacilityNameList.length>0){ %>
+            <div class="icon_align_detail">
+                <i class="dot_detail"></i>
+                <% _.each(commonUtil.limitTo(rest.RestaurantInfo.FacilityNameList,rest.RestaurantInfo.FacilityNameList.length-1),function(v,i){%>
+                <%= v%>、
+                <% });%>
+                <%= rest.RestaurantInfo.FacilityNameList[rest.RestaurantInfo.FacilityNameList.length-1] %>
+            </div>
+            <% } %>
+            <% if(rest.RestaurantInfo.BookTipRich){ %>
+            <div class="icon_align_detail js_jumpWebsite eword_break">
+                <i class="dot_detail"></i>
+                <%=rest.RestaurantInfo.BookTipRich %>
+            </div>
+            <% } %>
+            <div class="togglerestinfo" <% if(
+            rest.RestaurantInfo.BookTipRich ||
+            rest.RestaurantInfo.FacilityNameList && rest.RestaurantInfo.FacilityNameList.length>0 ||
+            (rest.BrandInfo && rest.BrandInfo.RestCount && rest.BrandInfo.RestCount > 0 && Lizard.P('fromType') !== 'external') ||
+            rest.RestaurantInfo.OpenTime && (rest.RestaurantInfo.OpenTime!= ' ')
+            ){ %> style="height: 0;overflow:hidden;" <% } %>>
+            <% if(rest.RestaurantInfo.SpecialTips){ %>
+            <div class="icon_align_detail">
+                <i class="dot_detail"></i>
+                <%= rest.RestaurantInfo.SpecialTips %>
+            </div>
+            <% } %>
+            <% if(rest.RestaurantInfo.PriceDesc){ %>
+            <div class="icon_align_detail">
+                <i class="dot_detail"></i>
+                <%= rest.RestaurantInfo.PriceDesc %>
+            </div>
+            <% } %>
+            <% if(rest.RestaurantInfo.PaymentCardNameList && rest.RestaurantInfo.PaymentCardNameList.length > 0){ %>
+            <div class="icon_align_detail">
+                <i class="dot_detail"></i>
+                <% _.each(rest.RestaurantInfo.PaymentCardNameList,function(value,index){ %>
+                <%=value + ' '%>
+                <% }) %>
+            </div>
+            <% } %>
+            <% if(rest.RestaurantInfo.WeiBo){%>
+            <div class="icon_align_detail">
+                <i class="dot_detail"></i>
+                <%= rest.RestaurantInfo.WeiBo %>
+            </div>
+            <% } %>
+            <% if(rest.RestaurantInfo.WeiXin){%>
+            <div class="icon_align_detail">
+                <i class="dot_detail"></i>
+                <%= rest.RestaurantInfo.WeiXin %>
+            </div>
+            <% } %>
+            <% if(rest.RestaurantInfo.Twitter){%>
+            <div class="icon_align_detail">
+                <i class="dot_detail"></i>
+                <%= rest.RestaurantInfo.Twitter %>
+            </div>
+            <% } %>
+            <% if(rest.RestaurantInfo.Facebook){%>
+            <div class="icon_align_detail">
+                <i class="dot_detail"></i>
+                <%= rest.RestaurantInfo.Facebook %>
+            </div>
+            <% } %>
+            <% if(rest.RestaurantInfo.WebSite){%>
+            <div class="icon_align_detail">
+                <i class="dot_detail"></i>
+                <span class="js_jumptoWebsite website">
+                                <%= rest.RestaurantInfo.WebSite %>
+                            </span>
+            </div>
+            <% } %>
+        </div>
+    </div>
+    <% if((rest.RestaurantInfo.SpecialTips ||
+    rest.RestaurantInfo.PriceDesc ||
+    rest.RestaurantInfo.PaymentCardNameList && rest.RestaurantInfo.PaymentCardNameList.length > 0 ||
+    rest.RestaurantInfo.WeiBo ||
+    rest.RestaurantInfo.WeiXin ||
+    rest.RestaurantInfo.Twitter ||
+    rest.RestaurantInfo.Facebook||
+    rest.RestaurantInfo.WebSite) &&(
+    rest.RestaurantInfo.BookTipRich ||
+    rest.RestaurantInfo.FacilityNameList && rest.RestaurantInfo.FacilityNameList.length>0 ||
+    (rest.BrandInfo && rest.BrandInfo.RestCount && rest.BrandInfo.RestCount > 0 && Lizard.P('fromType') !== 'external') ||
+    rest.RestaurantInfo.OpenTime && (rest.RestaurantInfo.OpenTime!= ' '))
+    ){ %>
+    <div class="spreadmorepack js_spread_resinfo" id="c_more_restaurant_infor">
+        <span>展开更多信息</span>
+    </div>
+    <% } %>
+    </div>
+    <%}%>
+    <!-- ↑↑ 餐厅信息 ↑↑ -->
+
+
+    <!-- ↓↓ 美食林上榜餐厅↓↓ -->
+    <%if(commonUtil.isHybridMode() && rest.MeiShiLinDistrictId && rest.MeiShiLinDistrictId > 0){%>
+    <% if(Lizard.P('fromHotel')!='hotelFoodsDetail' && Lizard.P('fromType')!='hotel'){ %>
+    <div class="rankmsl js_RankJump" id="c_backtomsl">
+        <i></i><span>2017·<%=rest.MeiShiLinDistrictName%>美食林上榜餐厅</span>
+    </div>
+    <%}%>
+    <%}%>
+    <!-- ↑↑ 美食林上榜餐厅 ↑↑ -->
+    <!--↓↓ 游友点评↓↓-->
+    <div id="comment_list">
+        <%if(Lizard.renderAt != "client" && rest.Comment && rest.Comment.CommentList && rest.Comment.CommentList.length > 0){%>
+        <%= Lizard.T("commentTmpl", _.extend(rest.Comment,{rest:rest})) %>
+        <%}else{%>
+        <div class="l-borderwrap l-borderwrap--firsttop js_add_comment" style="margin-top: 8px;">
+            <div class="l-borderwrap__item">
+                <p class="l-borderwrap__text l-borderwrap__text--fontchange">这里还没有点评，快来写第一条吧！</p>
+                <i class="l-borderwrap__arrow"></i>
+            </div>
+        </div>
+        <%}%>
+    </div>
+    <!-- ↓↓ 吃喝指南 ↓↓ -->
+    <% if(rest.PictureTexts && rest.PictureTexts.length > 0 && Lizard.P('fromHotel')!='hotelFoodsDetail' && Lizard.P('fromType')!='hotel' && Lizard.P('fromType') !== 'external') { %>
+    <div class="articalwrap">
+        <div class="title-detail">吃喝指南</div>
+        <%_.each(rest.PictureTexts,function(value,index){%>
+        <% if(index<2){ %>
+        <div class="artitem js_toArticeDetail" id="c_articles" data-h5url="<%=value.H5Url %>" data-hybridurl="<%=value.HybridUrl %>">
+            <div class="artitem_left">
+                <img src="<%=value.ImageUrl%>"/>
+            </div>
+            <div class="artitem_right">
+                <span class="artice_title"><%=value.Title%></span>
+                <span class="lip"><img src="<%=value.AuthorPortrait%>"/><span><%=value.AuthorName%></span></span>
+            </div>
+        </div>
+        <%}%>
+        <%});%>
+
+        <div class="hidepart" style="height: 0;overflow: hidden;">
+            <%_.each(rest.PictureTexts,function(value,index){%>
+            <% if(index>1){ %>
+            <div class="artitem js_toArticeDetail" id="c_articles" data-h5url="<%=value.H5Url %>" data-hybridurl="<%=value.HybridUrl %>">
+                <div class="artitem_left">
+                    <img src="<%=value.ImageUrl%>"/>
+                </div>
+                <div class="artitem_right">
+                    <span class="artice_title"><%=value.Title%></span>
+                    <span class="lip"><img src="<%=value.AuthorPortrait%>"/><span><%=value.AuthorName%></span></span>
+                </div>
+            </div>
+            <%}%>
+            <%});%>
+        </div>
+        <% if(rest.PictureTexts.length > 2){ %>
+        <div class="spreadmorepack js_spread_more_articles">
+            展开更多文章
+        </div>
+        <% } %>
+    </div>
+    <%}%>
+    <!-- ↑↑ 吃喝指南 ↑↑ -->
+    <!-- ↓↓ 附近热门 ↓↓ -->
+
+    <% if(Lizard.P('fromHotel')!='hotelFoodsDetail' && Lizard.P('fromType')!='hotel' && Lizard.P('fromType') !== 'external'&& rest.AroundRestaurants && rest.AroundRestaurants.length>0){ %>
+    <div class="neararoundhot js_nearAll">
+        <div class="title-detail specialtitle">附近热门</div>
+        <div class="l-detailt-tab">
+            <ul class="js_delegatenode">
+                <% if(rest.AroundRestaurants && rest.AroundRestaurants.length>0){ %>
+                <li class="is-active" data-tabname="foods"  id="c_near_restaurant"><span>美食</span></li>
+                <% } %>
+                <% if(rest.AroundSights && rest.AroundSights.length > 0) { %>
+                <li data-tabname="sight" id="c_near_sight"><span>景点</span></li>
+                <% } %>
+                <% if(rest.AroundShops && rest.AroundShops.length > 0) { %>
+                <li data-tabname="shop" id="c_near_shop"><span>购物</span></li>
+                <% } %>
+                <% if(rest.AroundHotel && rest.AroundHotel.length > 0) { %>
+                <li data-tabname="hotel" id="c_near_hotel"><span>酒店</span></li>
+                <%}%>
+            </ul>
+            <div class="tab__activeline"></div>
+        </div>
+        <% if(rest.AroundRestaurants && rest.AroundRestaurants.length>0){ %>
+        <div class="l-modlist js_foodsTab" style="display:block;">
+            <% _.each(rest.AroundRestaurants,function(value,index){ if(index>1) return;%>
+            <div class="l-modlist__item special js_jump_nearpoifood" data-resid="<%=value.Id%>" id="c_near_restaurant_<%=value.PoiId %>">
+                <div class="c-listinnerwrap">
+                    <div class="c-imgbox">
+                        <img src="<%=value.ImgUrl %>"/>
+                    </div>
+                    <div class="c-textview">
+                        <div class="c-textview__title">
+                            <div class="c-textview__title--text"><span><%=value.Name %></span></div>
+                        </div>
+                        <div class="c-textview__comment">
+                            <% if(value.MeiShiLinType >0){ %>
+                            <div class="c-textview__comment--msltip"><%= value.MeiShiLinName %></div>
+                            <% }else{ %>
+                            <% if(value.Score > 0){ %>
+                            <div class="c-textview__comment--score"><%=value.Score %>分</div>
+                            <% } %>
+                            <% if(value.CommentCount >= 10){ %>
+                            <div class="c-textview__comment--count"><%=value.CommentCount%>条点评</div>
+                            <% }else{ %>
+                            <div class="c-textview__comment--count">少于10条点评</div>
+                            <% } %>
+                            <%}%>
+
+                        </div>
+                        <% if(value.CuisineName ){ %>
+                        <div class="c-textview__tagbox"><i><%=value.CuisineName %></i></div>
+                        <%}%>
+                        <div class="c-textview__bottom">
+                            <div class="c-textview__bottom--distance"><%=value.Distance %></div>
+                            <% if(value.Price){ %>
+                            <div class="c-textview__bottom--price"><span class="n_text">人均</span><%=value.Price %></div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+        <% } %>
+
+        <% if(rest.AroundSights && rest.AroundSights.length > 0) { %>
+        <div class="l-modlist js_sightTab" style="display:none;">
+            <% _.each(rest.AroundSights,function(value,index){ if(index>1) return;%>
+            <div class="l-modlist__item special js_jump_nearpoisight" data-id="<%=value.Id%>" id="c_near_sight_<%=value.Id %>">
+                <div class="c-listinnerwrap">
+                    <div class="c-imgbox">
+                        <img src="<%=value.ImgUrl%>"/>
+                    </div>
+                    <div class="c-textview c-textview--sight">
+                        <div class="c-textview__title">
+                            <div class="c-textview__title--text"><span><%=value.Name %></span></div>
+                        </div>
+                        <div class="c-textview__comment">
+                            <% if(value.Score > 0){ %>
+                            <div class="c-textview__comment--score"><%=value.Score %>分</div>
+                            <% } %>
+                            <% if(value.CommentCount >= 10){ %>
+                            <div class="c-textview__comment--count"><%=value.CommentCount%>条点评</div>
+                            <% }else{ %>
+                            <div class="c-textview__comment--count">少于10条点评</div>
+                            <% } %>
+                        </div>
+                        <div class="c-textview__bottom">
+                            <div class="c-textview__bottom--distance"><%=value.Distance %></div>
+                            <% if(value.Price){ %>
+                            <div class="c-textview__bottom--price"><%=value.Price %><span class="n_text">起</span></div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+        <% } %>
+
+        <% if(rest.AroundShops && rest.AroundShops.length > 0) { %>
+        <div class="l-modlist js_shopTab" style="display: none;">
+            <% _.each(rest.AroundShops,function(value,index){ if(index>1) return;%>
+            <div class="l-modlist__item special js_poinearbyshops" data-id="<%=value.Id%>" data-districtid="<%=value.PoiId%>" id="c_near_shop_<%=value.Id %>">
+                <div class="c-listinnerwrap">
+                    <div class="c-imgbox">
+                        <img src="<%=value.ImgUrl%>"/>
+                    </div>
+                    <div class="c-textview c-textview--sight">
+                        <div class="c-textview__title">
+                            <div class="c-textview__title--text"><span><%=value.Name %></span></div>
+
+                        </div>
+                        <div class="c-textview__comment">
+                            <% if(value.Score > 0){ %>
+                            <div class="c-textview__comment--score"><%=value.Score %>分</div>
+                            <% } %>
+                            <% if(value.CommentCount >= 10){ %>
+                            <div class="c-textview__comment--count"><%=value.CommentCount%>条点评</div>
+                            <% }else{ %>
+                            <div class="c-textview__comment--count">少于10条点评</div>
+                            <% } %>
+                        </div>
+                        <div class="c-textview__bottom">
+                            <div class="c-textview__bottom--distance"><%=value.Distance %></div>
+                            <% if(value.Price){ %>
+                            <div class="c-textview__bottom--price"><%=value.Price %><span class="n_text">起</span></div>
+                            <% } %>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+        <%}%>
+
+        <% if(rest.AroundHotel && rest.AroundHotel.length > 0) { %>
+        <div class="l-modlist js_hotelTab" style="display: none;">
+            <% _.each(rest.AroundHotel,function(value,index){ if(index>1) return;%>
+            <div class="l-modlist__item special js_poinearbyhotel" data-h5url="<%=value.LinkUrl%>" data-hybridurl="<%=value.HybirdUrl%>" id="c_near_hotel_<%=value.PoiId %>">
+                <div class="c-listinnerwrap">
+                    <div class="c-imgbox">
+                        <img src="<%=value.ImgUrl %>"/>
+                    </div>
+                    <div class="c-textview c-textview--sight">
+                        <div class="c-textview__title">
+                            <div class="c-textview__title--text"><span><%=value.Name %></span></div>
+
+                        </div>
+                        <div class="c-textview__comment">
+                            <% if(value.Score > 0){ %>
+                            <div class="c-textview__comment--score"><%=value.Score%>分</div>
+                            <%}%>
+                            <% if(value.CommentCount >= 10){ %>
+                            <div class="c-textview__comment--count"><%=value.CommentCount%>条点评</div>
+                            <% }else{ %>
+                            <div class="c-textview__comment--count">少于10条点评</div>
+                            <% } %>
+                        </div>
+                        <div class="c-textview__bottom">
+                            <div class="c-textview__bottom--distance"><%=value.Distance %></div>
+                            <% if(value.Price){ %>
+                            <div class="c-textview__bottom--price"><%=value.Price %><span class="n_text">起</span></div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+        <%}%>
+        <% if(rest.AroundRestaurants && rest.AroundRestaurants.length>0){ %>
+        <p class="spreadmorepack js_neatHot marginTop"><a href="#">查看全部美食</a></p>
+        <%}else if(rest.AroundSights && rest.AroundSights.length>0){%>
+        <p class="spreadmorepack js_neatHot marginTop"><a href="#">查看全部景点</a></p>
+        <%}else if(rest.AroundShops && rest.AroundShops.length>0){ %>
+        <p class="spreadmorepack js_neatHot marginTop"><a href="#">查看全部购物</a></p>
+        <%}else if(rest.AroundHotel && rest.AroundHotel.length>0){%>
+        <p class="spreadmorepack js_neatHot marginTop"><a href="#">查看全部酒店</a></p>
+        <%}%>
+    </div>
+    <%}%>
+    <!-- ↑↑ 附近热门 ↑↑ -->
+    <% if(Lizard.P('fromHotel')!='hotelFoodsDetail' && Lizard.P('fromType')!='hotel' && Lizard.P('fromType') !== 'external'){ %>
+    <div class="error_correction js_correctinfo">我要纠错</div>
+    <%}%>
+    <!--图片层-->
+    <% if(Lizard.P('fromHotel')!='hotelFoodsDetail' && Lizard.P('fromType')!='hotel'){ %>
+    <div class="bot_pic banner_bottom" id="banner_bottom"></div>
+    <% } %>
+
+    <!-- ↓↓ 底部写点评加入行程 ↓↓ -->
+    <% if(Lizard.P('fromHotel')!='hotelFoodsDetail' && Lizard.P('fromType')!='hotel' && Lizard.P('fromType') !== 'external'){ %>
+    <ul class="menu-bottom">
+        <li class="write-comment" href="/webapp/you/comment/food/<%= rest.RestaurantInfo.RestaurantId %>.html" id="delicacies_detail_write"><a href="#">写点评<i class="icon_jiang"></i></a></li>
+        <% if(commonUtil.isHybridMode()){%>
+        <li class="add-date js_add_travel_plan" id="add_to_plan"><a href="#">加入行程</a></li>
+        <%}%>
+    </ul>
+    <% } %>
+    <!-- ↑↑ 底部写点评加入行程 ↑↑ -->
+
+
+    <!-- ↓↓ 回到顶部按钮 ↓↓ -->
+    <div class="botfixedwrap js_botfixedwrap" style="display:none;">
+        <div class="c-opitem js_backToTop"></div>
+    </div>
+    <!-- ↑↑回到顶部按钮 end↑↑ -->
+
+
+    <!-- 拨打电话界面 -->
+    <div class="js_tell_pop mod_msg_pop" id="pnl_call" style="display:none">
+        <div class="js_tell_pop_show this_wrap">
+            <div class="this_list">
+                <div id="list_btnPhones" class="js_tell_pop_list this_group">
+                    <a data-type="1" id="c_sight_status">餐馆已关</a>
+                    <a data-type="2" id="c_sight_latitude">地图位置错误</a>
+                    <a data-type="3" id="c_sight_info">其他信息错误</a>
+                </div>
+                <div class="this_group">
+                    <a class="js_tell_close" id="link_closePhone">取消</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 选择旅行计划 -->
+    <section class="js_add_travel_plan_list travel-plans" style="opacity: 1; display:none; z-index: 3076;">
+        <div class="this_wrapper column-list this_show">
+            <div class="travel-plans-head">
+                <a class="js_add_travel_plan_cancle link_closeCalendar">取消</a>
+                <span>选择行程/旅行计划</span>
+                <a id="chose_date_confirm" class="js_add_travel_plan_submit link_AddCalendar">确定</a>
+            </div>
+            <div class="content-view">
+                <div class="cui-bd cui-roller-bd" >
+                    <ul class="cui-select-view" style="height:240px; overflow-x:hidden; overflow-y: auto;" >
+                    </ul>
+                    <div style="position: absolute; z-index: 9999; width: 7px; bottom: 2px; top: 2px; right: 1px; overflow: hidden; transform: translateZ(0px); transition-duration: 500ms; opacity: 0;">
+                        <div style="box-sizing: border-box; position: absolute; border: 1px solid rgba(255, 255, 255, 0.901961); border-radius: 3px; width: 100%; transition-duration: 0ms; height: 202px; transform: translate(0px, 0px) translateZ(0px); transition-timing-function: cubic-bezier(0.1, 0.57, 0.1, 1); background: rgba(0, 0, 0, 0.498039);"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 旅行计划加入成功 -->
+    <div class="js_add_travel_plan_suc view cui-layer cui-toast" style="z-index: 3076; margin-left: -149.5px; margin-top: -27px; display: none" id="ui-view-7">
+        <div class="cui-white-layer-padding">
+            <div class="cui-layer-content">
+                <h2>加入成功</h2>
+                <h4>请到我的行程查看>></h4>
+            </div>
+            <div class="js_add_travel_plan_suc_close input-close"></div>
+        </div>
+    </div>
+    <!-- 旅行计划 不用选日期，可以直接加入啦！ -->
+    <div class="js_add_travel_plan_background view cui-mask" style="position: fixed; top:0; bottom:0; left: 0; right:0; z-index: 3075; display: none"></div>
+
+
+
+    <div class="journey_bottom_outer js_schedule" style="display: none; opacity:0">
+        <div class="journey_bottom_box">
+            <div class="box_header">
+                <div class="discard js_schedule_cancel">取消</div>
+                <span class="title">请选择出行日期</span>
+                <div class="confirm js_schedule_submit" id="chose_date_confirm">确定</div>
+            </div>
+            <div class="js_schedule_calendar date_picker" style="overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <section class="js_schedule_success poi_schedule_success">
+        <div class="this_msg">
+            <dl>
+                <dt>已添加到行程</dt>
+                <dd class="js_schedule_time"></dd>
+            </dl>
+            <% if (Lizard.isHybrid||Lizard.isInCtripApp) { %>
+            <a id="c_schedule" class="js_schedule_goto">去查看</a>
+            <% } %>
+        </div>
+    </section>
+
+    <section class="js_collection_success poi_schedule_success">
+        <div class="this_msg" style="text-align: center;width:293px;">
+            <dl style="width:100%">
+                <dt>收藏成功！</dt>
+                <dt>可前往美食林首页-顶部-我的收藏查看</dt>
+            </dl>
+        </div>
+    </section>
+
+    </div>
+    </div>
+</script>
+<script id="commentTmpl" type="text/lizard-template">
+    <section class="mdetail_comment" style="margin-top:8px;">
+        <!--点评改个新标题-->
+        <div class="c-ratedtitle heightauto">
+            <div class="c-ratedtitle__item">
+                <h3>游友点评</h3>
+            </div>
+            <%if(CommentCount > 2){%>
+            <div class="c-ratedtitle__rlink js_more_comment">查看全部</div>
+            <%}%>
+        </div>
+        <div class="c-tt-title__title--comment">
+            <div class="ui-comment-box ui-comment-star<%=commonUtil.getStar(CommentResult.AverageScore)%>">
+                <i class="common-iconfont ui-comment-star"></i>
+                <i class="common-iconfont ui-comment-star"></i>
+                <i class="common-iconfont ui-comment-star"></i>
+                <i class="common-iconfont ui-comment-star"></i>
+                <i class="common-iconfont ui-comment-star"></i>
+            </div>
+            <strong><%= CommentResult.AverageScore %>分</strong><span class="comment_count"><%=CommentCount%>条点评</span>
+        </div>
+
+        <% if (CommentCount > 50 && CommentResult.CommentHotTags && CommentResult.CommentHotTags.length > 0 && !commonUtil.isGsHybrid()) { %>
+        <div class="tag-list">
+            <ul class="js_key_tags">
+                <% _.each(CommentResult.CommentHotTags,function(value,index){%>
+                <%if(index <= 8 && value.CommentCount>0){ %>
+                <%if(!(value.TagContent=='最新' || value.TagContent=='好评' || value.TagContent=='差评' || value.TagContent=='带图'|| value.TagContent=='来自订单' || value.TagContent=='来自游记')){%>
+                <li data-tagId="<%=value.TagId %>" id="c_tag_comment" data-index="<%=index %>"><%=value.TagContent %><span><%=value.CommentCount %></span></li>
+                <%}%>
+                <%}%>
+                <%})%>
+            </ul>
+        </div>
+        <%}%>
+        <ul>
+            <% _.each(commonUtil.limitTo(CommentList,3),function(v,k){ %>
+            <li class="comment_block js_tag">
+                <!-- 7.6公共头 -->
+                <div class="user-info">
+                    <div class="user-info__portrait js_user" id="c_spotdetail_comment_user" data-auth="<%=v.UserInfoModel.ClientAuth%>" data-source="<%=v.SourceType %>">
+                        <img src="<%=v.UserInfoModel.UserImageSrc%>"/>
+                    </div>
+                    <div class="user-info__content">
+                        <div class="user-detail">
+                            <div class="user-detail__name js_author"><%=v.UserInfoModel.UserNick%></div>
+                            <div class="user-detail__tags"><% if(v.UserInfoModel.UserVIPLevel > 0){%><span class="user-detail__tags--level">VIP<%=v.UserInfoModel.UserVIPLevel %></span><%}%><% _.each(v.IdentityNames,function(value,i){%><span class="user-detail__tags--title"><%=value%></span><%})%></div>
+                        </div>
+                        <div class="ui-comment-box ui-comment-star<%=commonUtil.getStar(v.TotalStar)%>">
+                            <i class="common-iconfont ui-comment-star"></i>
+                            <i class="common-iconfont ui-comment-star"></i>
+                            <i class="common-iconfont ui-comment-star"></i>
+                            <i class="common-iconfont ui-comment-star"></i>
+                            <i class="common-iconfont ui-comment-star"></i>
+                        </div>
+                    </div>
+                    <% if(v.IsPicked){ %>
+                    <div class="user-info__epic"></div>
+                    <%}else{%>
+                    <div class="user-info__hold" style="display: none">待审核</div>
+                    <%}%>
+                </div>
+                <div class="paragraph_comment js_commentP" id="c_spotdetail_single_comment<%=k%>" data-commentid="<%=v.CommentId%>">
+                    <p class="plain_comment fold js_comment_desc" id="c_spotdetail_single_comment">
+                        <%=commonUtil.xssFilter(v.Content)%>
+                    </p>
+                </div>
+                <%if(v.Images&&v.Images.length>0){%>
+                <div class="img-group js_comment_pic" id="c_spotdetail_comment_pic">
+                    <% _.each(v.Images,function(item,t) {  %>
+                    <% if (t < 4) { %>
+                    <a href="javascript:void(0)" class="js_image" data-superindex="<%= k %>" data-index="<%=t%>" data-count="<%=v.Images.length %>" data-commentid="<%=v.CommentId%>" data-from="<%= v.UserInfoModel.UserNick %>">
+                        <img src="<%=item.ThumbnailUrl%>" data-urllist="<%= item.BaseUrl %>">
+                        <% if(v.Images.length>4 && t==3){ %>
+                        <span class="count"><%=v.Images.length %>张</span>
+                        <% } %>
+                    </a>
+                    <% } %>
+                    <% }) %>
+                </div>
+                <%}else if(v.ShortVideoList && v.ShortVideoList.length>0){%>
+                <div class="play-group" data-video="<%=v.ShortVideoList[0].PlayUrl %>">
+                    <% if(Lizard.isHybrid || Lizard.isInCtripApp){%>
+                    <div class="video_cover">
+                        <img data-src="<%= v.ShortVideoList[0].PlayUrl%>" src="<%= v.ShortVideoList[0].CoverImageUrl %>" >
+                        <div class="btn_play js_play"></div>
+                    </div>
+                    <%}else{%>
+                    <div class="videoContainer" data-poster="<%= v.ShortVideoList[0].CoverImageUrl%>" data-src="<%= v.ShortVideoList[0].PlayUrl%>"></div>
+                    <%}%>
+                </div>
+
+                <%}%>
+            </li>
+            <%})%>
+        </ul>
+        <%if(CommentCount > 2){%>
+        <p href="/html5/you/comment/DistrictId/SightId-sight.html" id="delicacies_detail_commentsall" class="find_morelink more_comment">查看全部<%=CommentCount%>条点评</p>
+        <%}%>
+
+        <% if(Lizard.isHybrid || Lizard.isInCtripApp){%>
+        <div class="videoContainer" style="display: none"></div>
+        <%}%>
+    </section>
+</script>
