@@ -13,13 +13,21 @@ export default class Container extends React.Component{
     this.state.rest = {};
   }
 
+componentDidMount(){
+  window.addEventListener('scroll',function(){
+    console.log(123);
+
+  },false);
+
+
+}
   componentWillMount(){
       var datamodel = CModel.getInstance();
       var PromiseData1 = new Promise(function(resolve,reject){
-        datamodel.url = "/soa2/10332/GetRestaurantInfoV705Extend?_fxpcqlniredt=09031014211785765051";
+        datamodel.url = "/soa2/10332/GetRestaurantInfoV705Extend";
         datamodel.method = "POST";
         datamodel.setParam({
-          "RestaurantId":"4994402",
+          "RestaurantId":"410789",
           "ImageQuality":1,
           "CurrentDestId":"2",
           "Lon":0,
@@ -36,7 +44,7 @@ export default class Container extends React.Component{
         datamodel.url = "/soa2/10332/GetRestaurantInfoV705?_fxpcqlniredt=09031163410092652660";
         datamodel.method = "POST";
         datamodel.setParam({
-          "RestaurantId":"4994402",
+          "RestaurantId":"410789",
           "DistrictId":2,
           "ImageQuality":1,
           "CurrentDestId":"2",
@@ -64,7 +72,6 @@ export default class Container extends React.Component{
 
 
   render(){
-  console.log(this.state);
     return (
       <div className="foodwraper_detail foodwraper_detail__ios">
           <Header opacity="1" transparent="true"/>

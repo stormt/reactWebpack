@@ -109,6 +109,7 @@ export default class AbstractModel{
 								}
 						}
 				}
+				XHRObj.timeout = 3000;
 				XHRObj.open("POST",url,true);
 				XHRObj.setRequestHeader('content-type',"application/json");
 				XHRObj.setRequestHeader('Accept',"application/json");

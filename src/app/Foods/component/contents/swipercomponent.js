@@ -9,24 +9,41 @@ export default class SwiperComponent extends React.Component {
 	}
 
 	componentDidUpdate(prevProps,prevState){
+		 var baseSetting = null;
+		if(prevProps.bannerType == 1){
+			 baseSetting = {
+				 autoplayDisableOnInteraction : false,
+				 paginationClickable :true,
+				 loop : true
+			};
 
-		new Swiper('.jsimgbanner_wraper .swiper-container',{
-			 autoplayDisableOnInteraction : false,
-       pagination :'.swiper-pagination',
-       paginationClickable :true,
-       loop : true,
-       autoplay:3000
-		});
-
+		}
+		if(prevProps.bannerType == 2){
+					baseSetting = {
+			      effect: "coverflow",
+			      grabCursor: true,
+			      centeredSlides: true,
+			      loop: false,
+			      slidesPerView: "auto",
+			      coverflow: {
+			        rotate: 30,
+			        stretch: 10,
+			        modifier: 3,
+			        slideShadows: true
+			      }
+			  }
+		}
+ new Swiper(this.props.bannersetting.initwraper,Object.assign({},baseSetting,this.props.bannersetting));
 
 	}
 	render(){
-
+			var bannerurl;
 			var swiperItems = (this.props.banner || []).map((banner,index)=>{
+				bannerurl =banner.ImageUrl ? banner.ImageUrl : banner;
 				return(
 					<div className={swipercss['swiper-slide'] + ' ' + 'swiper-slide'} key={index}>
-						<div className={styleSheet.autoheight}>
-							<img src={banner} style={{width:'100%'}}/>
+						<div className={this.props.bannerType == 1 ? styleSheet.autoheight :''}>
+							<img src={bannerurl} style={{width:'100%'}}/>
 						</div>
 					</div>
 				);
