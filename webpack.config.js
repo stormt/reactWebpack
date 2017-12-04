@@ -83,7 +83,7 @@ module.exports = {
 
 		}),
 		new webpack.BannerPlugin({
-			banner:'this is written by lhb'
+			banner:'this is written With reactjs'
 		}),
 		extractTxtplugin,
 		new webpack.HotModuleReplacementPlugin(),

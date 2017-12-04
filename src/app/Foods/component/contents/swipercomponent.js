@@ -7,7 +7,13 @@ export default class SwiperComponent extends React.Component {
 	constructor(props) {
 		super(props);
 	}
+	shouldComponentUpdate(nextProps, nextState){
+		if(this.props.banner == nextProps.banner){
+			return false;
+		}
 
+		return true;
+	}
 	componentDidUpdate(prevProps,prevState){
 		 var baseSetting = null;
 		if(prevProps.bannerType == 1){
@@ -42,7 +48,7 @@ export default class SwiperComponent extends React.Component {
 				bannerurl =banner.ImageUrl ? banner.ImageUrl : banner;
 				return(
 					<div className={swipercss['swiper-slide'] + ' ' + 'swiper-slide'} key={index}>
-						<div className={this.props.bannerType == 1 ? styleSheet.autoheight :''}>
+						<div className={this.props.bannerType == 1 ? styleSheet.autoheight :'no'}>
 							<img src={bannerurl} style={{width:'100%'}}/>
 						</div>
 					</div>

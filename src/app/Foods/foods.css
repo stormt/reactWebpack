@@ -407,3 +407,18 @@ body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fiel
     overflow: hidden;
     position: relative;
 }
+.botfixedwrap{
+  position: fixed;
+    z-index: 3;
+    bottom: 45px;
+    right: 16px;
+}
+.c-opitem{
+width: 49px;
+height: 49px;
+overflow: hidden;
+background: url(https://pages.c-ctrip.com/you/ttd/ttd_d7.4.png?v=20171129_14_38) no-repeat;
+background-size: 200px 200px;
+margin-bottom: 12px;
+background-position: 0 -53px;
+}

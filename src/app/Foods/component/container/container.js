@@ -11,6 +11,8 @@ export default class Container extends React.Component{
     super(props);
     this.state= {};
     this.state.rest = {};
+    this.state.bottomHeaderOpacity = 1;
+    this.state.upperHeaderOpacity = 0;
   }
 
 componentDidMount(){
@@ -68,15 +70,55 @@ componentDidMount(){
         });
       });
   }
+  onContentScroll(scrollTopValue){
+    var backtotopbt = document.getElementsByClassName('js_botfixedwrap')[0];
+    if(scrollTopValue > 60){
+      this.setState({
+        bottomHeaderOpacity:0,
+        upperHeaderOpacity:1
+      });
 
+    }else if(scrollTopValue > 40){
+      this.setState({
+        bottomHeaderOpacity:0.3,
+        upperHeaderOpacity:0.7
+      });
+
+    }else if(scrollTopValue > 20){
+      this.setState({
+        bottomHeaderOpacity:0.7,
+        upperHeaderOpacity:0.3
+      });
+    }else if(scrollTopValue > 10){
+      this.setState({
+        bottomHeaderOpacity:0.9,
+        upperHeaderOpacity:0.1
+      });
+
+    }else if(scrollTopValue >= 0){
+      this.setState({
+        bottomHeaderOpacity:1,
+        upperHeaderOpacity:0
+      });
+
+    }
+    if(scrollTopValue > 0){
+      backtotopbt.style.display = 'block';
+
+    }else{
+
+      backtotopbt.style.display = 'none';
+    }
+
+  }
 
 
   render(){
     return (
       <div className="foodwraper_detail foodwraper_detail__ios">
-          <Header opacity="1" transparent="true"/>
-          <Header opacity="0" title={this.state.RestaurantInfo && this.state.RestaurantInfo.Name}/>
-          <Contents contentdata={this.state}/>
+          <Header opacity={this.state.bottomHeaderOpacity} transparent="true"/>
+          <Header opacity={this.state.upperHeaderOpacity} title={this.state.RestaurantInfo && this.state.RestaurantInfo.Name}/>
+          <Contents contentdata={this.state} reportscroll={(arg)=>this.onContentScroll(arg)}/>
       </div>
     )
   }

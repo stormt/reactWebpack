@@ -7,9 +7,6 @@ export default class TopBanner extends React.Component {
 		super(props);
 	}
 
-
-
-
 	render(){
 		return(
 			<section className={styleSheet.topmain}>
