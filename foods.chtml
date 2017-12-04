@@ -801,15 +801,7 @@
             <% }); %>
         </div>
         <%}%>
-        <% if(rest.AroundRestaurants && rest.AroundRestaurants.length>0){ %>
-        <p class="spreadmorepack js_neatHot marginTop"><a href="#">查看全部美食</a></p>
-        <%}else if(rest.AroundSights && rest.AroundSights.length>0){%>
-        <p class="spreadmorepack js_neatHot marginTop"><a href="#">查看全部景点</a></p>
-        <%}else if(rest.AroundShops && rest.AroundShops.length>0){ %>
-        <p class="spreadmorepack js_neatHot marginTop"><a href="#">查看全部购物</a></p>
-        <%}else if(rest.AroundHotel && rest.AroundHotel.length>0){%>
-        <p class="spreadmorepack js_neatHot marginTop"><a href="#">查看全部酒店</a></p>
-        <%}%>
+        
     </div>
     <%}%>
     <!-- ↑↑ 附近热门 ↑↑ -->

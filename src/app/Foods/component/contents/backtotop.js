@@ -12,9 +12,10 @@ export default class BackToTop extends React.Component{
     var raf = window.requestAnimationFrame || function(fn){
       setTimeout(fn,1000/60);
     }
+    var stepinstance = distance_top / 6;
     var callback = function(){
       if(distance_top > 0){
-        distance_top = b.scrollTop = distance_top - 50;
+        distance_top = b.scrollTop = distance_top - stepinstance;
         raf(callback);
       }
 

@@ -1,4 +1,4 @@
-/*! this is written by lhb */
+/*! this is written With reactjs */
 
   @font-face {
     font-family: "common-iconfont";
@@ -12,33 +12,33 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-.headercontainer{
+._1mOs84j8LpCEdir1_nlzT8{
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 5;
 }
-.headercontainer__grey{
+._3SwpoxVgQm0zneToJL4vup{
 
     background: #fff;
 }
-.headercontainer__grey .common-iconfont{
+._3SwpoxVgQm0zneToJL4vup .common-iconfont{
     color: #444;
     text-shadow: none;
 }
-.headercontainer_detail{
+._1cteFE4nyg3z9bMftQSPNc{
       height: 44px;
       z-index: 1;
       position: relative;
 }
-.ui_back{
+._3wvZI1MsTJqJyUszUTBvYi{
    width: 22px;
     margin-top: 0;
     padding: 0px 12px 11px 12px;
     box-sizing: content-box;
 }
-.headercontainer_detail__left{
+.mXLfv5QPiWv4BPDkc_V4q{
 
     left: 4px;
     top: 0;
@@ -46,7 +46,7 @@
     box-sizing: content-box;
 
 }
-.ui_title{
+.ejUtHjU07nBuw_w_xjVJZ{
     margin-left: 44px;
     padding-top: 9px;
     line-height: 24px;
@@ -58,7 +58,7 @@
     overflow: hidden;
 }
 
-.headercontainer_detail__right{
+.-pqO2CDTYhXS7gbICQgJ-{
 
     top: 0;
     right: 16px;
@@ -89,7 +89,7 @@
   left: 0;
   bottom: 10px;
 }
-.swiper-pagination{
+._1UfLkgOWq4VHbI88l0NAf2{
   position: absolute;
   text-align: center;
   -webkit-transform: translate3d(0,0,0);

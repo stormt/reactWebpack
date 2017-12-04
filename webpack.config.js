@@ -22,7 +22,8 @@ module.exports = {
 		contentBase:path.join(__dirname,'dist'),
 		port:4000,
 		compress:true,
-		hot:true
+		hot:true,
+    public: '10.32.64.13:4000'
 	},
 
 	module:{
