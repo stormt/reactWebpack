@@ -23,6 +23,12 @@ export default class Contents extends React.Component{
 
 
 		}
+		shouldComponentUpdate(nextProps, nextState){
+	    if(this.props.contentdata == nextProps.contentdata){
+	        return false;
+	    }
+	     return true;
+	  }
 
 		render(){
 				return (
@@ -31,7 +37,7 @@ export default class Contents extends React.Component{
 							<ResInfos resdata={this.props.contentdata.RestaurantInfo} VideoBanner={this.props.contentdata.VideoBanner} Expert={this.props.contentdata.Expert}/>
 							<RemdDish resdata={this.props.contentdata.RestaurantInfo} Menus={this.props.contentdata.Menus}/>
 							{this.props.contentdata.PictureTexts ? (<EatAndDrink pictextdata={this.props.contentdata.PictureTexts}/>):''}
-							{this.props.contentdata.AroundRestaurants ? (<NearbyHot aroundhotel={this.props.contentdata.AroundHotel} aroundrestaurants={this.props.contentdata.AroundRestaurants} aroundshops={this.props.contentdata.AroundShops} aroundsights={this.props.contentdata.AroundSights}/>):''}
+							<NearbyHot aroundhotel={this.props.contentdata.AroundHotel} aroundrestaurants={this.props.contentdata.AroundRestaurants} aroundshops={this.props.contentdata.AroundShops} aroundsights={this.props.contentdata.AroundSights}/>
 							<MenuBottom />
 							<BackToTop />
 					</div>

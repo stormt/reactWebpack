@@ -9,10 +9,11 @@ export default class Container extends React.Component{
 
   constructor(props){
     super(props);
-    this.state= {};
-    this.state.rest = {};
-    this.state.bottomHeaderOpacity = 1;
-    this.state.upperHeaderOpacity = 0;
+    this.state = {
+        rest:{},
+        bottomHeaderOpacity:1,
+        upperHeaderOpacity:0
+    }
   }
 
 componentDidMount(){
@@ -63,9 +64,7 @@ componentDidMount(){
         this.setState((prevState)=>{
           let rest = Object.assign({},prevState.rest,resArr[0],resArr[1]);
           let state = {};
-          for (var key in rest){
-              state[key] = rest[key]
-          }
+          state.rest = rest;
           return state;
         });
       });
@@ -111,14 +110,14 @@ componentDidMount(){
     }
 
   }
-
+  
 
   render(){
     return (
       <div className="foodwraper_detail foodwraper_detail__ios">
-          <Header opacity={this.state.bottomHeaderOpacity} transparent="true"/>
-          <Header opacity={this.state.upperHeaderOpacity} title={this.state.RestaurantInfo && this.state.RestaurantInfo.Name}/>
-          <Contents contentdata={this.state} reportscroll={(arg)=>this.onContentScroll(arg)}/>
+          <Header opacity={this.state.bottomHeaderOpacity} transparent="true" isHybrid={false}/>
+          <Header opacity={this.state.upperHeaderOpacity} title={this.state.rest.RestaurantInfo && this.state.rest.RestaurantInfo.Name} isHybrid={false}/>
+          <Contents contentdata={this.state.rest} reportscroll={(arg)=>this.onContentScroll(arg)}/>
       </div>
     )
   }

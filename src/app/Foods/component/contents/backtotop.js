@@ -7,6 +7,7 @@ export default class BackToTop extends React.Component{
   }
 
   backtotop(){
+
     var b = document.getElementById('detail_scroll_wraper');
     var distance_top = b.scrollTop;
     var raf = window.requestAnimationFrame || function(fn){
@@ -21,12 +22,11 @@ export default class BackToTop extends React.Component{
 
     }
     var timer = raf(callback);
-    b.scrollTop = 0;
-
 
   }
 
   render(){
+
       return(
         <div className={styleSheet.botfixedwrap +' ' + 'js_botfixedwrap'} style={{display:'none'}}>
             <div className={styleSheet['c-opitem'] +' '+ 'js_backToTop'} onClick={this.backtotop}></div>

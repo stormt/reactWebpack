@@ -5,7 +5,16 @@ export default class ResInfos extends React.Component{
 		constructor(props){
 			super(props);
 		}
+		tdcpJump(e){
+			var curDom = e.currentTarget;
+			console.log(curDom);
+			var h5Url = curDom.dataset.link;
+			if(!/^https?/.test(h5Url)){
+					h5Url = "http://m.ctrip.com" + h5Url;
+			}
+			window.location.href = h5Url;
 
+		}
 		render(){
 			let MslTypeInfo = null;
 			let RestaurantInfo = this.props.resdata || {};
@@ -34,7 +43,7 @@ export default class ResInfos extends React.Component{
                         </div>
                     </div>
 							  </div>
-							 {VideoBanner ? (<div className={styleSheet.tdcp}><span>探店测评</span></div>):''}
+							 {VideoBanner ? (<div className={styleSheet.tdcp} data-link={VideoBanner && VideoBanner.LinkUrl} onClick={(e)=>this.tdcpJump(e)}><span>探店测评</span></div>):''}
 					   </div>
 					 {(Expert && Expert.ImgUrl && Expert.Introduction && Expert.RecommendedReason)?(
 						 <div>
