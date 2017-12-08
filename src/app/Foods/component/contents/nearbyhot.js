@@ -15,8 +15,6 @@ export default class NearbyHot extends React.Component {
 	getActiveLineWidth(spanDom){
 
 		this.spanwidth = spanDom.offsetWidth;
-
-
 	}
 	componentDidMount(){
 		// var ul = document.getElementsByClassName('js_delegatenode')[0],
@@ -47,13 +45,9 @@ export default class NearbyHot extends React.Component {
 		// 			}
 		// 		},false);
 
-
-
-
 	}
 
 	componentWillReceiveProps(nextProps){
-		console.log(nextProps);
 		let activeTabText = '';
 		let tabNum = 0;
 		let activeTab ='';
@@ -82,7 +76,6 @@ export default class NearbyHot extends React.Component {
 			activeTabText:activeTabText,
 			activeTab:activeTab
 		},function(){
-			console.log(this.spanwidth);
 			this.setState({
 				activeline_css:{
 					width:this.spanwidth + 32,

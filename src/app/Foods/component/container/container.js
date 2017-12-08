@@ -17,10 +17,7 @@ export default class Container extends React.Component{
   }
 
 componentDidMount(){
-  window.addEventListener('scroll',function(){
-    console.log(123);
 
-  },false);
 
 
 }
@@ -69,6 +66,13 @@ componentDidMount(){
         });
       });
   }
+
+  shouldComponentUpdate(nextProps){
+    console.log("shouldComponentUpdate invoked");
+    return true;
+
+  }
+
   onContentScroll(scrollTopValue){
     var backtotopbt = document.getElementsByClassName('js_botfixedwrap')[0];
     if(scrollTopValue > 60){
@@ -110,7 +114,7 @@ componentDidMount(){
     }
 
   }
-  
+
 
   render(){
     return (
