@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import IndexContainer from './component/container/indexcontainer.js';
+import Container from './component/container/container.js';
 ReactDOM.render(
-  <IndexContainer/>,
+  <Container/>,
   document.getElementById('main-viewport')
 );

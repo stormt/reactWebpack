@@ -68,7 +68,7 @@ componentDidMount(){
   }
 
   shouldComponentUpdate(nextProps){
-    console.log("shouldComponentUpdate invoked");
+
     return true;
 
   }

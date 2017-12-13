@@ -24,9 +24,7 @@ export default class Contents extends React.Component{
 
 		}
 		shouldComponentUpdate(nextProps, nextState){
-			console.log(this.props.contentdata === nextProps.contentdata);
-			console.log(this.props);
-			console.log(nextProps);
+			
 	    if(this.props.contentdata == nextProps.contentdata){
 	        return false;
 	    }
