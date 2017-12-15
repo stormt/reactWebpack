@@ -5,6 +5,53 @@ export default class TopBanner extends React.Component {
 	constructor(props) {
 		super(props);
 		this.filterClick = this.filterClick.bind(this);
+		this.handlePositionClick = this.handlePositionClick.bind(this);
+		this.handleSortClick = this.handleSortClick.bind(this);
+		this.handleCuiClick = this.handleCuiClick.bind(this);
+		this.state = {
+			chosen:false
+		}
+	}
+
+	handlePositionClick(flag){
+			this.props.forUpforwarDate(flag);
+
+	}
+
+	handleSortClick(){
+
+
+	}
+
+	handleCuiClick(){
+
+
+	}
+
+	filterClick(e){
+
+		var whichTab = e.target.innerHTML;
+		if(whichTab == '位置'){
+				if(!this.poiclicked){
+					this.poiclicked = true;
+					this.handlePositionClick(true);
+				}else{
+					this.poiclicked = false;
+					this.handlePositionClick(false);
+				}
+
+				return;
+		}
+		if(whichTab == '菜系'){
+				this.handleCuiClick();
+				return;
+		}
+		if(whichTab == '综合排序'){
+				this.handleSortClick();
+				return;
+		}
+
+
 	}
 
 	render(){

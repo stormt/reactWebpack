@@ -4,6 +4,9 @@ import styleSheet  from '../../foods.css';
 export default class CuiTab extends React.Component {
 	constructor(props) {
 		super(props);
+		this.state = {
+			isactive:false
+		}
 	}
 
 	render(){
@@ -11,7 +14,7 @@ export default class CuiTab extends React.Component {
 				filter.FoodSort = this.props.FoodSort || [];
 				filter.CuisineSort = this.props.CuisineSort || [];
 			return(
-				<div className="l-filterbox">
+				<div className={"l-filterbox " + (this.state.isactive ? " current" :"")}>
 						<div className="filteritem-group facilities-group filter-multistage">
 								<div className="filter-tab-head">
 										<ul>

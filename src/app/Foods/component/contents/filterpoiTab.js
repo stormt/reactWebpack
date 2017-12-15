@@ -1,95 +1,55 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import TabLeftContent from './tableftcontent.js';
+import TabRightContent from './tabrightcontent.js';
 import styleSheet  from '../../foods.css';
 export default class FilterPositionTab extends React.Component {
 	constructor(props) {
 		super(props);
+		this.state = {
+			isactive:false
+		}
+
+	}
+
+	componentWillReceiveProps(nextProps){
+		var show = nextProps.PoisShow;
+			var hasChose = false;
+			var innerstate={
+				isactive : show
+			};
+			this.setState(innerstate);
+	}
+	updateBodyFilter(index){
+
+		// debugger;
+		tabright[index].push({
+			'display':'block'
+		});
+		this.setState({
+			tabright:tabright
+		});
 	}
 
 	render(){
+		console.log("render");
 		var filter = this.props.filterresult || {};
-		var tableft = [],
-				tabright = [];
-		(filter.DistanceSort && filter.DistanceSort.length > 0) ? (tableft.push("附近"),filter.DistanceSort.unshift('distance'),tabright.push(filter.DistanceSort)):'';
-		(filter.LandmarkSort && filter.LandmarkSort.length > 0) ? (tableft.push("热门地标"),filter.LandmarkSort.unshift('landmark'),tabright.push(filter.LandmarkSort)):'';
-		(filter.ZoneSort && filter.ZoneSort.length > 0) ? (tableft.push("热门商圈"),filter.ZoneSort.unshift('zonesort'),tabright.push(filter.ZoneSort)):'';
-		(filter.RegionSort && filter.RegionSort.length > 0) ? (tableft.push("行政区"),filter.RegionSort.unshift('region'),tabright.push(filter.RegionSort)):'';
-		(filter.MetroSort && filter.MetroSort.length > 0) ? (tableft.push("地铁"),filter.MetroSort.unshift('subway'),tabright.push(filter.MetroSort)):'';
-
+		this.tabright = [];
+		(filter.DistanceSort && filter.DistanceSort.length > 0) ? (filter.DistanceSort.unshift('distance'),this.tabright.push(filter.DistanceSort)):'';
+		(filter.LandmarkSort && filter.LandmarkSort.length > 0) ? (console.log("avv"),this.tabright.push(filter.LandmarkSort)):'';
+		(filter.ZoneSort && filter.ZoneSort.length > 0) ? (filter.ZoneSort.unshift('zonesort'),this.tabright.push(filter.ZoneSort)):'';
+		(filter.RegionSort && filter.RegionSort.length > 0) ? (filter.RegionSort.unshift('region'),this.tabright.push(filter.RegionSort)):'';
+		(filter.MetroSort && filter.MetroSort.length > 0) ? (filter.MetroSort.unshift('subway'),this.tabright.push(filter.MetroSort)):'';
+		debugger;
+	
 		return(
-			<div className="l-filterbox">
+			<div className={"l-filterbox " + (this.state.isactive ? " current" :"")}>
 				<div className="filteritem-group filter-multistage">
-						<div className="filter-tab-head">
-								<ul>
-									{
-										tableft.map((tableftitem,index)=>{
-											return(
-												 <li key={index} className={index==0 ? 'actived':''}><span>{tableftitem}</span></li>
-											)
-										})
-									}
-								</ul>
-						</div>
-						{
-							tabright.map((rightitem,index)=>{
-								var tag =rightitem.shift();
-								if(index < tabright.length - 1 && tag !== 'subway'){
-									return (
-										<div className="filter-tab-body" key={index} style={index == 0 ? ({'display':'block'}):({'display':'none'})}>
-												<ul>
-														<li className="actived" key='8765'>不限</li>
-														{
-															rightitem.map((item,index)=>(<li key={tag == 'zonesort' ? item.ZoneId : item.Id}>{tag == 'zonesort' ? item.ZoneName : item.Name}</li>))
-														}
-												</ul>
-										</div>
-									)
-								}else{
-									if(tag == 'subway'){
-										return (
-											<div className="multistage_inner" key={index} style={index == 0 ? {'display':'flex'} :{'display':'none'}}>
-												 <div className="filter-tab-head">
-														 <ul>
-																{
-																	rightitem.map((item,index)=>{
-																		return (
-																			<li key={item.Id} className={index==0 ? 'actived':''}>
-																				 <span>{item.Name}</span>
-																		 </li>
-																		)
-																	})
-																}
-														 </ul>
-												 </div>
-												 {
-													 rightitem.map((item,index)=>{
-														 return(
-															 <div className={"filter-tab-body" + (index == 0 ?(" actived"):'')} key={index} style={index == 0 ? ({'display':'block'}):({'display':'none'})}>
-																 <ul>
-																		 <li className="actived" key="45780">不限</li>
-																		 {
-																			 item.Stations.map((subitem,index)=>{
-																				 return (
-																					 <li className="second_item" key={subitem.Id}>
-																								{subitem.Name}
-																								{subitem.EName ? (<p className="ename">{subitem.EName}</p>):''}
-																					 </li>
-																				 )
-																			 })
-																		 }
-																 </ul>
-															</div>
-														 )
-													 })
-												 }
-											</div>
-										)
-									}
-								}
-							})
-						}
+						<TabLeftContent FilterResult = {filter}/>
+						<TabRightContent tabright={this.tabright}/>
 				</div>
 			</div>
 		)
+
 	}
 }

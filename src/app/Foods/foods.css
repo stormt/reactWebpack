@@ -943,9 +943,6 @@ a {
     position: fixed;
     z-index: 1005;
     padding: 0 20px;
-    display: box;
-    display: -webkit-box;
-    display: -webkit-flex;
     display: flex;
     -webkit-box-orient: horizontal;
     box-orient: horizontal;
@@ -963,9 +960,6 @@ a {
     box-sizing: border-box;
 }
 .version_f_filter .version_f_item {
-    display: box;
-    display: -webkit-box;
-    display: -webkit-flex;
     display: flex;
     -webkit-box-orient: horizontal;
     box-orient: horizontal;
@@ -1037,9 +1031,6 @@ html {
     height: 440px;
     height: 4.4rem;
     background-color: #f0f0f0;
-    display: box;
-    display: -webkit-box;
-    display: -webkit-flex;
     display: flex;
     -webkit-box-orient: horizontal;
     box-orient: horizontal;
@@ -1136,9 +1127,7 @@ html {
     background-position: -16px -257px;
 }
 .l-filterbox .filteritem-group.filter-multistage .multistage_inner {
-    display: box;
-    display: -webkit-box;
-    display: -webkit-flex;
+
     display: flex;
     -webkit-box-orient: horizontal;
     box-orient: horizontal;
@@ -1317,7 +1306,7 @@ html {
     background: #fff;
     position: relative;
     z-index: 1;
-    display: box;
+
     display: -webkit-box;
     display: -webkit-flex;
     display: flex;
@@ -1357,9 +1346,6 @@ html {
     height: 440px;
     height: 4.4rem;
     background-color: #f0f0f0;
-    display: box;
-    display: -webkit-box;
-    display: -webkit-flex;
     display: flex;
     -webkit-box-orient: horizontal;
     box-orient: horizontal;

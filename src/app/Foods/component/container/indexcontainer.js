@@ -13,10 +13,16 @@ export default class IndexContainer extends React.Component {
 			this.state = {
 					result:{},
 	        bottomHeaderOpacity:1,
-	        upperHeaderOpacity:0
+	        upperHeaderOpacity:0,
+					PoisShow:false
 	    }
+			this.forUpforwarDate = this.forUpforwarDate.bind(this);
 	}
-
+	forUpforwarDate(isshow){
+		this.setState({
+			PoisShow:isshow
+		})
+	}
 	componentWillMount(){
       var datamodel = CModel.getInstance();
       var PromiseData1 = new Promise(function(resolve,reject){
@@ -77,13 +83,15 @@ export default class IndexContainer extends React.Component {
   }
 
 	render(){
+
+		
 			return(
 				<div>
 						<div className="l-sightheadouter">
-								<IndexContents Result={this.state.result}/>
+								<IndexContents Result={this.state.result} forUpforwarDate={this.forUpforwarDate}/>
 						</div>
 						<div>
-						<FilterPositionTab filterresult={this.state.result.Filter}/>
+						<FilterPositionTab filterresult={this.state.result.Filter} PoisShow={this.state.PoisShow}/>
 						<FilterSortByTab sortBy={this.state.result.Filter && this.state.result.Filter.DefaultSort}/>
 						<FilterCuiTab FoodSort={this.state.result.Filter && this.state.result.Filter.FoodSort} CuisineSort={this.state.result.Filter && this.state.result.Filter.CuisineSort}/>
 						</div>
