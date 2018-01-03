@@ -8,23 +8,27 @@ import BackToTop from './backtotop.js';
 import MenuBottom from './menuBottom.js';
 import EatAndDrink from './eatanddrink.js';
 import NearbyHot from './nearbyhot.js';
+import DetailStore from '../../store/detailstore.js';
+import DetailAction from '../../action/detailaction.js';
 export default class Contents extends React.Component{
 		constructor(props){
 			super(props);
+			this.state = {
+
+			}
 		}
 		componentDidMount(){
 			var b = document.getElementById('detail_scroll_wraper');
 			var scrollTop;
 		  b.addEventListener('scroll',function(){
 				scrollTop = b.scrollTop;
-				this.props.reportscroll(scrollTop);
-
+				DetailAction.resetOpacity(scrollTop);
 		  }.bind(this),false);
 
 
 		}
 		shouldComponentUpdate(nextProps, nextState){
-			
+
 	    if(this.props.contentdata == nextProps.contentdata){
 	        return false;
 	    }

@@ -1,10 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Header from '../../publicResource/component/Header/header.js';
-import stylesheet from './sight.css';
-import fontsheet from '../../publicResource/css/commoniconfont.css';
-console.log(stylesheet);
+import Parent from './parent.js';
 ReactDOM.render(
-  <Header/>,
-  document.getElementById('root')
+  <Parent />,
+  document.getElementById('main-viewport')
 );
