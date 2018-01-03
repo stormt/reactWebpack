@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack",
-    "build": "webpack-dev-server --hot --host 10.32.64.13 --port 4000"
+    "build": "webpack-dev-server --hot"
   },
   "keywords": [],
   "author": "",
