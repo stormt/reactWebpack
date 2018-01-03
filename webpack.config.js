@@ -9,8 +9,8 @@ const extractTxtplugin = new ExtractTextPlugin({
 module.exports = {
 	entry:{
     // 'app/Foods/foods':'./src/app/Foods/foods.js',
-    // 'app/Sight/sight':'./src/app/Sight/sight.js',
-    'app/Foods/index':'./src/app/Foods/index.js'
+    // 'app/Foods/index':'./src/app/Foods/index.js',
+    'app/Sight/sight':'./src/app/Sight/sight.js'
 	},
 	devtool: 'cheap-eval-source-map',
 	output:{
@@ -24,7 +24,7 @@ module.exports = {
 		port:4000,
 		compress:true,
 		hot:true,
-    public: '10.32.64.13:4000'
+    public: '10.32.64.13:5000'
 	},
 
 	module:{
@@ -35,7 +35,7 @@ module.exports = {
                 use:[{
     	            loader: 'css-loader',
     	            options: {
-    	            	modules: false,
+    	            	modules: true,
     	        	},
           		},'postcss-loader'],
               fallback: 'style-loader',
@@ -71,17 +71,24 @@ module.exports = {
 		// 		except:['alert','console']
 		// 	}
 		// }),
-    // new HtmlWebpackPlugin({
-    //   filename:'app/Foods/foods.html',
-    //   template:'src/app/Foods/foods.html',
-    //   chunks:['app/Foods/foods','publicResource/css/common'],
-    //   hash:true
-    //
-    // }),
+    new HtmlWebpackPlugin({
+      filename:'app/Foods/foods.html',
+      template:'src/app/Foods/foods.html',
+      chunks:['app/Foods/foods','publicResource/css/common'],
+      hash:true
+
+    }),
     new HtmlWebpackPlugin({
       filename:'app/Foods/index.html',
       template:'src/app/Foods/foods.html',
       chunks:['app/Foods/index','publicResource/css/common'],
+      hash:true
+
+    }),
+    new HtmlWebpackPlugin({
+      filename:'app/Sight/sight.html',
+      template:'src/app/Foods/foods.html',
+      chunks:['app/Sight/sight','publicResource/css/common'],
       hash:true
 
     }),
