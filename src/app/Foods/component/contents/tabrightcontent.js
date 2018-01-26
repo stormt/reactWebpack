@@ -10,27 +10,6 @@ export default class TabRightContent extends React.Component {
 	}
 	render(){
 		var tabright = this.props.tabright || [];
-		var isshow = this.props.isshow;
-		return(
-			<div>
-			{
-				 tabright.map((rightitem,index)=>{
-					var tag = rightitem.shift();
-					if(index < tabright.length - 1 && tag !== 'subway'){
-						return (
-							<TabRightContentCommon rightitem={rightitem} key={index} />
-						)
-					}else{
-						if(tag == 'subway'){
-							return (
-								<div key={index}></div>
-							)
-						}
-					}
-				})
-			}
-
-			</div>
-		)
+		return(<TabRightContentCommon rightitem={tabright} />)
 	}
 }

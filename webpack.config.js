@@ -9,8 +9,8 @@ const extractTxtplugin = new ExtractTextPlugin({
 module.exports = {
 	entry:{
     // 'app/Foods/foods':'./src/app/Foods/foods.js',
-    // 'app/Foods/index':'./src/app/Foods/index.js',
-    'app/Sight/sight':'./src/app/Sight/sight.js'
+    'app/Foods/index':'./src/app/Foods/index.js',
+    //'app/Sight/sight':'./src/app/Sight/sight.js'
 	},
 	devtool: 'cheap-eval-source-map',
 	output:{
@@ -35,7 +35,7 @@ module.exports = {
                 use:[{
     	            loader: 'css-loader',
     	            options: {
-    	            	modules: true,
+    	            	modules: false,
     	        	},
           		},'postcss-loader'],
               fallback: 'style-loader',

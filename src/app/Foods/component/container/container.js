@@ -41,6 +41,7 @@ componentDidMount(){
 
   }
   render(){
+    console.log(this.state);
     return (
       <div className="foodwraper_detail foodwraper_detail__ios">
           <Header opacity={this.state.bottomHeaderOpacity} transparent="true" isHybrid={false}/>

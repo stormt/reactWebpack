@@ -8,13 +8,15 @@ export default class TabRightCommon extends React.Component {
 	}
 	render(){
 		var rightitem = this.props.rightitem || [];
+		console.log(rightitem);
+		var activetabbody = true;
 		return(
-			<div className="filter-tab-body"  style={rightitem}>
+			<div className={"filter-tab-body" + (activetabbody ? ' current':'') } style={rightitem}>
 					<ul>
-							<li className="actived" key='8765'>不限</li>
-							{
-								rightitem.map((item,index)=>(<li></li>))
-							}
+						<li className="actived" key='8765'>不限</li>
+						{
+							rightitem.map((item,index)=>(<li key={index}>{item.Name || item.ZoneName}</li>))
+						}
 					</ul>
 			</div>
 		)

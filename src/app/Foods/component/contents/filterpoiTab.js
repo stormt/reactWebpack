@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import TabLeftContent from './tableftcontent.js';
 import TabRightContent from './tabrightcontent.js';
 import styleSheet  from '../../foods.css';
+import store from '../../store/reduxstore.js';
 export default class FilterPositionTab extends React.Component {
 	constructor(props) {
 		super(props);
@@ -11,42 +12,68 @@ export default class FilterPositionTab extends React.Component {
 		}
 
 	}
+	componentDidMount(){
+		var self = this;
+		store.subscribe(function(){
+			console.log("subscribe cb");
+			var activedtabtype = store.getState().position_active_type;
+			if(activedtabtype == 'LandmarkSort'){
+				self.tabright = store.getState().result.Filter.LandmarkSort;
+			}else if(activedtabtype == 'ZoneSort'){
+				self.tabright = store.getState().result.Filter.ZoneSort;
+			}else if(activedtabtype == 'RegionSort'){
+				self.tabright = store.getState().result.Filter.RegionSort;
+			}
+			console.log(self.tabright);
+			self.setState({
+				isactive:store.getState().position_flag
+			});
+		})
 
+	}
+
+	shouldComponentUpdate(nextProps,nextState){
+
+		return true;
+	}
 	componentWillReceiveProps(nextProps){
-		var show = nextProps.PoisShow;
-			var hasChose = false;
-			var innerstate={
-				isactive : show
-			};
-			this.setState(innerstate);
-	}
-	updateBodyFilter(index){
+		console.log("componentWillReceiveProps lifecycle");
+		var filter = store.getState().result.Filter || {};
+		if(this.tableft && this.tableft.length > 0){
+			
+		}else{
+			this.tableft = [];
+			if(filter.DistanceSort && filter.DistanceSort.length > 0){
+					this.tableft.push({type:"DistanceSort",value:"附近"});
 
-		// debugger;
-		tabright[index].push({
-			'display':'block'
-		});
-		this.setState({
-			tabright:tabright
-		});
+			}
+			if(filter.LandmarkSort && filter.LandmarkSort.length > 0){
+					this.tableft.push({type:"LandmarkSort",value:"热门地标"});
+					// tabright.push();
+			}
+			if(filter.ZoneSort && filter.ZoneSort.length > 0){
+					this.tableft.push({type:"ZoneSort",value:"热门商圈"})
+			}
+			if(filter.RegionSort && filter.RegionSort.length > 0){
+					this.tableft.push({type:"RegionSort",value:"行政区"})
+			}
+			if(filter.MetroSort && filter.MetroSort.length > 0){
+					this.tableft.push({type:"MetroSort",value:"地铁"})
+			}
+			this.tabright = filter.LandmarkSort;
+		}
+
 	}
+
 
 	render(){
-		console.log("render");
-		var filter = this.props.filterresult || {};
-		this.tabright = [];
-		(filter.DistanceSort && filter.DistanceSort.length > 0) ? (filter.DistanceSort.unshift('distance'),this.tabright.push(filter.DistanceSort)):'';
-		(filter.LandmarkSort && filter.LandmarkSort.length > 0) ? (console.log("avv"),this.tabright.push(filter.LandmarkSort)):'';
-		(filter.ZoneSort && filter.ZoneSort.length > 0) ? (this.tabright.push(filter.ZoneSort)):'';
-		(filter.RegionSort && filter.RegionSort.length > 0) ? (this.tabright.push(filter.RegionSort)):'';
-		(filter.MetroSort && filter.MetroSort.length > 0) ? (this.tabright.push(filter.MetroSort)):'';
-
 		return(
 			<div className={"l-filterbox " + (this.state.isactive ? " current" :"")}>
 				<div className="filteritem-group filter-multistage">
-						<TabLeftContent FilterResult = {filter}/>
-						
+						<TabLeftContent tableft={this.tableft} />
+					    <TabRightContent tabright={this.tabright}/>
 				</div>
+
 			</div>
 		)
 

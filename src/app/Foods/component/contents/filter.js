@@ -1,6 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import styleSheet  from '../../foods.css';
+import store from '../../store/reduxstore.js';
+import {rootreducer} from '../../reducer/indexreducer.js';
+import {getPositionFlag} from '../../action/indexaction.js';
 export default class TopBanner extends React.Component {
 	constructor(props) {
 		super(props);
@@ -13,9 +16,9 @@ export default class TopBanner extends React.Component {
 		}
 	}
 
-	handlePositionClick(flag){
-			this.props.forUpforwarDate(flag);
-
+	handlePositionClick(){
+		var flag = store.getState().position_flag ? false : true;
+		store.dispatch(getPositionFlag(flag));
 	}
 
 	handleSortClick(){
@@ -32,14 +35,8 @@ export default class TopBanner extends React.Component {
 
 		var whichTab = e.target.innerHTML;
 		if(whichTab == '位置'){
-				if(!this.poiclicked){
-					this.poiclicked = true;
-					this.handlePositionClick(true);
-				}else{
-					this.poiclicked = false;
-					this.handlePositionClick(false);
-				}
 
+			this.handlePositionClick();
 				return;
 		}
 		if(whichTab == '菜系'){
@@ -77,7 +74,7 @@ export default class TopBanner extends React.Component {
 									</div>
 							)
 						})
-				}
+					}
 			</div>
 		)
 	}
