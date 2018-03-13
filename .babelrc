@@ -1,8 +1,3 @@
 {
-  "presets": [
-    ["es2015", {
-      "useBuiltIns": true
-    }],
-    "react"
-  ]
+  "presets":["env", "stage-2","react"]
 }

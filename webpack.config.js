@@ -9,8 +9,8 @@ const extractTxtplugin = new ExtractTextPlugin({
 module.exports = {
 	entry:{
     // 'app/Foods/foods':'./src/app/Foods/foods.js',
-    'app/Foods/index':'./src/app/Foods/index.js',
-    //'app/Sight/sight':'./src/app/Sight/sight.js'
+    // 'app/Foods/index':'./src/app/Foods/index.js',
+    'app/Sight/sight':'./src/app/Sight/sight.js'
 	},
 	devtool: 'cheap-eval-source-map',
 	output:{
@@ -19,6 +19,12 @@ module.exports = {
 		publicPath:'/assets/',
     chunkFilename: '[id].bundle.js'
 	},
+    watch:true,
+    watchOptions:{
+        ignored:/node_modules/,
+        aggregateTimeout:500,
+        poll:500
+    },
 	devServer:{
 		contentBase:path.join(__dirname,'dist'),
 		port:4000,
@@ -63,6 +69,10 @@ module.exports = {
         }
     ]
 	},
+    // resolve:{
+    //
+    //     mainFields:['main'],
+    // },
 
 	plugins: [
 		// new webpack.optimize.UglifyJsPlugin({
@@ -71,20 +81,20 @@ module.exports = {
 		// 		except:['alert','console']
 		// 	}
 		// }),
-    new HtmlWebpackPlugin({
-      filename:'app/Foods/foods.html',
-      template:'src/app/Foods/foods.html',
-      chunks:['app/Foods/foods','publicResource/css/common'],
-      hash:true
-
-    }),
-    new HtmlWebpackPlugin({
-      filename:'app/Foods/index.html',
-      template:'src/app/Foods/foods.html',
-      chunks:['app/Foods/index','publicResource/css/common'],
-      hash:true
-
-    }),
+    // new HtmlWebpackPlugin({
+    //   filename:'app/Foods/foods.html',
+    //   template:'src/app/Foods/foods.html',
+    //   chunks:['app/Foods/foods','publicResource/css/common'],
+    //   hash:true
+    //
+    // }),
+    // new HtmlWebpackPlugin({
+    //   filename:'app/Foods/index.html',
+    //   template:'src/app/Foods/foods.html',
+    //   chunks:['app/Foods/index','publicResource/css/common'],
+    //   hash:true
+    //
+    // }),
     new HtmlWebpackPlugin({
       filename:'app/Sight/sight.html',
       template:'src/app/Foods/foods.html',

@@ -3,5 +3,5 @@ import ReactDOM from 'react-dom';
 import IndexContainer from './component/container/indexcontainer.js';
 ReactDOM.render(
   <IndexContainer/>,
-  document.getElementById('main-viewport')
+  document.getElementById('main')
 );

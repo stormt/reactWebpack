@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Parent from './parent.js';
+// import stylesheet from './foods.css';
+import IndexContainer from './component/container/indexcontainer';
 ReactDOM.render(
-  <Parent />,
-  document.getElementById('main-viewport')
+  <IndexContainer/>,
+  document.getElementById('main')
 );

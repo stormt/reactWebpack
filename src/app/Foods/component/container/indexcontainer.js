@@ -10,15 +10,6 @@ import FilterCuiTab from '../contents/cuitab.js';
 import store from '../../store/reduxstore.js';
 export default class IndexContainer extends React.Component {
 
-	forUpforwarDate(isshow){
-		this.setState({
-			PoisShow:isshow
-		})
-	}
-
-	componentWillMount(){
-
-  	}
 	componentDidMount(){
 		store.dispatch(getIndexDate());
 		var self = this;
@@ -45,7 +36,7 @@ export default class IndexContainer extends React.Component {
 				<FilterPositionTab filterresult={this.state.result.Filter} PoisShow={this.state.PoisShow}/>
 				<FilterSortByTab sortBy={this.state.result.Filter && this.state.result.Filter.DefaultSort}/>
 				<FilterCuiTab FoodSort={this.state.result.Filter && this.state.result.Filter.FoodSort} CuisineSort={this.state.result.Filter && this.state.result.Filter.CuisineSort}/>
-			
+
 			</div>
 		)
 	}
