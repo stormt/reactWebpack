@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {getpositionactiveflag} from '../../action/indexaction.js';
 import Immutable from 'immutable';
+import Perf from 'react-addons-perf';
 export default class TableftContent extends React.Component {
 	constructor(props) {
 		super(props);
@@ -26,6 +27,7 @@ export default class TableftContent extends React.Component {
 
 
 	superFilter(e){
+		Perf.start();
 		var curDom = e.target;
 		if(curDom.nodeName == 'SPAN'){
 			curDom = curDom.parentNode;
@@ -35,7 +37,20 @@ export default class TableftContent extends React.Component {
 		this.props.getpositionleftactiveflag(index);
 	}
 
+	componentDidUpdate(){
 
+		Perf.stop();
+		// 获取监控结果 
+		var measure = Perf.getLastMeasurements(); 
+		// 打印总时间 
+		// Perf.printInclusive(measure); 
+		// 打印独占时间（不包括组件挂载时间） 
+		Perf.printExclusive(measure); 
+		// // 打印浪费的时间（最有用的函数，例如render 了但是DOM没有变化） 
+		// Perf.printWasted(measure); 
+		// //操作真实dom的情况 
+		// Perf.printOperations(measure); 
+	}
 	render(){
 
 		var activeindex = this.props.activeIndex || 0;
