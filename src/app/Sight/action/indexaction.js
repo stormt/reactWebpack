@@ -1,5 +1,7 @@
 import CModel from '../../common/abstractModel.js';
-export function getIndexDate(RegionId=0){
+import {combineReducers} from 'redux-immutable';
+import {merge,fromJS,Map,toJS} from 'immutable';
+export function getIndexDate(RegionId=0,fn){
 	var datamodel = CModel.getInstance();
 	var PromiseData1 = new Promise(function(resolve,reject){
 	  datamodel.url = "/soa2/10332/json/GetHomePageRestaruantListV706";
@@ -49,12 +51,20 @@ export function getIndexDate(RegionId=0){
 	  });
 	});
 
+	
 		return Promise.all([PromiseData1,PromiseData2]).then((resArr)=>{
 		  return {
 			  type:'GET_FIRST_DATA',
 			  payload:Object.assign({},resArr[0],resArr[1])
 		  }
 		});
+		// return Promise.all([PromiseData1,PromiseData2]).then((resArr)=>{
+		// 	fn && fn();
+		// 	return {
+		// 	  type:'GET_FIRST_DATA',
+		// 	  payload:fromJS(resArr[0]).merge(fromJS(resArr[1]))
+		// 	}
+		// });
 }
 export function getPositionFlag(flag){
 	return {

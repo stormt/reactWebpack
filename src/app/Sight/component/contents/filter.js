@@ -1,12 +1,44 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Immutable from 'immutable';
+import LoadingComponent from "./Loading.js";
 export default class TopBanner extends React.Component {
 	constructor(props,context){
 		super();
 		this.state = {};
 		this.filterClick = this.filterClick.bind(this);
 		this.handlePositionClick = this.handlePositionClick.bind(this);
+		this.deepCompare = this.deepCompare.bind(this);
 	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		  const thisProps = this.props || {};
+		  const thisState = this.state || {};
+		  nextState = nextState || {};
+		  nextProps = nextProps || {};
+		  if (Object.keys(thisProps).length !== Object.keys(nextProps).length ||
+		    Object.keys(thisState).length !== Object.keys(nextState).length) {
+		    return true;
+		  }
+		  for (const key in nextProps) {
+		    if (!Immutable.is(thisProps[key], nextProps[key])) {
+		      return true;
+		    }
+		  }
+		  for (const key in nextState) {
+		    if (!Immutable.is(thisState[key], nextState[key])) {
+		      return true;
+		    }
+		  }
+		  return false;
+		}
+
+	deepCompare(instance, nextProps, nextState) {
+
+		return !Immutable.is(instance.props, nextProps) || 
+			!Immutable.is(instance.state, nextState);
+	}
+
 
 	filterClick(e){
 		var whichTab = e.target.innerHTML;
@@ -50,13 +82,26 @@ export default class TopBanner extends React.Component {
 
 	}
 
+	componentWillUnmount(){
+
+		console.log("TopBanner   componentWillUnmount");
+	}
+
+	componentWillMount(){
+		console.log("TopBanner   componentWillMount");
+
+	}
+	componentWillReceiveProps(){
+
+		console.log("");
+	}
+
 	render(){
-		console.log("filter组建呗刷新！");
 		var tabs = [];
 		const {filter} = this.props;
 		if(!filter){
 			return (
-				<div>loading</div>
+				<LoadingComponent />
 			)
 		}else{
 			((filter.DistanceSort.length > 0) ||

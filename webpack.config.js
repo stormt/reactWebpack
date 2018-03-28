@@ -8,7 +8,7 @@ const extractTxtplugin = new ExtractTextPlugin({
 
 module.exports = {
 	entry:{
-    // 'app/Foods/foods':'./src/app/Foods/foods.js',
+    //'app/Foods/foods':'./src/app/Foods/foods.js',
     // 'app/Foods/index':'./src/app/Foods/index.js',
     'app/Sight/sight':'./src/app/Sight/sight.js'
 	},
@@ -86,7 +86,7 @@ module.exports = {
     //   template:'src/app/Foods/foods.html',
     //   chunks:['app/Foods/foods','publicResource/css/common'],
     //   hash:true
-    //
+    
     // }),
     // new HtmlWebpackPlugin({
     //   filename:'app/Foods/index.html',

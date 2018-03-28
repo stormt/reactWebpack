@@ -14,10 +14,27 @@ export default class TableftContent extends React.Component {
 		}
 	}
 
-	shouldComponentUpdate(nextProps,nextState){
-
-		return this.deepCompare(this, nextProps, nextState);
-	}
+	shouldComponentUpdate(nextProps, nextState) {
+		  const thisProps = this.props || {};
+		  const thisState = this.state || {};
+		  nextState = nextState || {};
+		  nextProps = nextProps || {};
+		  if (Object.keys(thisProps).length !== Object.keys(nextProps).length ||
+		    Object.keys(thisState).length !== Object.keys(nextState).length) {
+		    return true;
+		  }
+		  for (const key in nextProps) {
+		    if (!Immutable.is(thisProps[key], nextProps[key])) {
+		      return true;
+		    }
+		  }
+		  for (const key in nextState) {
+		    if (!Immutable.is(thisState[key], nextState[key])) {
+		      return true;
+		    }
+		  }
+		  return false;
+		}
 
 	deepCompare(instance, nextProps, nextState) {
 
@@ -43,13 +60,13 @@ export default class TableftContent extends React.Component {
 		// 获取监控结果 
 		var measure = Perf.getLastMeasurements(); 
 		// 打印总时间 
-		// Perf.printInclusive(measure); 
+		//Perf.printInclusive(measure); 
 		// 打印独占时间（不包括组件挂载时间） 
-		Perf.printExclusive(measure); 
+		//Perf.printExclusive(measure); 
 		// // 打印浪费的时间（最有用的函数，例如render 了但是DOM没有变化） 
-		// Perf.printWasted(measure); 
+		Perf.printWasted(measure); 
 		// //操作真实dom的情况 
-		// Perf.printOperations(measure); 
+		//Perf.printOperations(measure); 
 	}
 	render(){
 

@@ -1,11 +1,8 @@
-import { combineReducers } from 'redux'
-import todos from './todos'
-import counter from './counter'
+import { combineReducers } from 'redux';
+// import {combineReducers} from 'redux-immutable';
 import ressourcedata from './ressourcedata';
 import status from './status';
 export default combineReducers({
-  todos,
-  counter,
   ressourcedata,
   status
 })

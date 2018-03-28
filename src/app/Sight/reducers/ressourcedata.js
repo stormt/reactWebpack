@@ -8,3 +8,14 @@ export default function ressourcedata(state={},action){
 
 
 }
+// import {Map} from 'immutable';
+// export default function ressourcedata(state=Map({}),action){
+// 	switch(action.type) {
+// 		case 'GET_FIRST_DATA':
+// 			return action.payload;
+// 		default:
+//     		return state;
+// 	}
+
+
+// }

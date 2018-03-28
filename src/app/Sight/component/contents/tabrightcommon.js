@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Perf from 'react-addons-perf';
 export default class TabRightCommon extends React.Component {
 	constructor(props) {
 		super(props);
@@ -9,8 +10,26 @@ export default class TabRightCommon extends React.Component {
 	superFilter(e){
 		var curDom = e.target;
 		var index = curDom.dataset.index;
+		Perf.start();
 		this.props.getpositionrightactiveflag(index);
 		this.props.getFilterdata(114);
+		this.props.hidefiltermask(false);
+
+	}
+
+	componentDidUpdate(){
+
+		Perf.stop();
+		// 获取监控结果 
+		var measure = Perf.getLastMeasurements(); 
+		// 打印总时间 
+		// Perf.printInclusive(measure); 
+		// // 打印独占时间（不包括组件挂载时间） 
+		// Perf.printExclusive(measure); 
+		// // // 打印浪费的时间（最有用的函数，例如render 了但是DOM没有变化） 
+		// Perf.printWasted(measure); 
+		// // //操作真实dom的情况 
+		// Perf.printOperations(measure); 
 	}
 
 	render(){

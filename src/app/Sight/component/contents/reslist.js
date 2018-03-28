@@ -1,29 +1,45 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Immutable from 'immutable';
+import {toJS} from 'immutable';
 export default class ResList extends React.Component {
 	constructor(props) {
 		super(props);
 	}
 
 	componentWillUpdate(){
-
-		this.props.hidefiltermask(false);
+		
 	}
 
-	shouldComponentUpdate(nextProps, nextState){
 
-		return true;
-	}
+	shouldComponentUpdate(nextProps, nextState) {
+		  const thisProps = this.props || {};
+		  const thisState = this.state || {};
+		  nextState = nextState || {};
+		  nextProps = nextProps || {};
+		  if (Object.keys(thisProps).length !== Object.keys(nextProps).length ||
+		    Object.keys(thisState).length !== Object.keys(nextState).length) {
+		    return true;
+		  }
+		  for (const key in nextProps) {
+		    if (!Immutable.is(thisProps[key], nextProps[key])) {
+		      return true;
+		    }
+		  }
+		  for (const key in nextState) {
+		    if (!Immutable.is(thisState[key], nextState[key])) {
+		      return true;
+		    }
+		  }
+		  return false;
+		}
 
 	componentWillReceiveProps(nextProps){
-		console.log("componentWillReceiveProps");
-		console.log(this.props);
-		console.log(nextProps);
-		console.log(nextProps == this.props);
+
 	}
 
 	render(){
-		console.log("餐厅列表被刷新！");
+		console.log(this.props);
 			var list = this.props.restaurants || [];
 			return(
 				<div className="recommend">

@@ -8,8 +8,8 @@ export default class TabRightContent extends React.Component {
 
 	}
 	render(){
-		// console.log(this.props);
+	
 		var tabright = this.props.tabright || [];
-		return(<TabRightContentCommon rightitem={tabright} activeIndex={this.props.activeIndex} getpositionrightactiveflag={this.props.getpositionrightactiveflag} getFilterdata={this.props.getFilterdata}/>)
+		return(<TabRightContentCommon rightitem={tabright} activeIndex={this.props.activeIndex} getpositionrightactiveflag={this.props.getpositionrightactiveflag} getFilterdata={this.props.getFilterdata} hidefiltermask={this.props.hidefiltermask}/>)
 	}
 }

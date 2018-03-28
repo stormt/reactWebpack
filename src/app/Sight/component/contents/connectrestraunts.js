@@ -3,6 +3,7 @@ import {getIndexDate,getPositionFlag,getpositionleftactiveflag,getpositionrighta
 // import {getIndexDate} from '../../action/indexaction.js';
 import RestrauntsComponents from './RestrauntsComponent.js';
 function mapStateToProps(state){
+	// state = state.toJS();
 	var tableft = [],
 		tabrighttype,
 		tabright = [],
@@ -46,11 +47,12 @@ function mapDispatchToProps(dispatch){
 		handlechoseclick:(flag)=>dispatch(getPositionFlag(flag)),
 		getpositionleftactiveflag:(index,activelab)=>dispatch(getpositionleftactiveflag(index)),
 		getpositionrightactiveflag:(index)=>dispatch(getpositionrightactiveflag(index)),
-		getFilterdata:(RegionId)=>dispatch(getIndexDate(RegionId))
+		getFilterdata:(RegionId)=>dispatch(getIndexDate(RegionId)),
+		hidefiltermask:(flag)=>dispatch(getPositionFlag(flag))
 
 	}
 
 }
 // debugger;
-var Container = connect(mapStateToProps,mapDispatchToProps)(RestrauntsComponents);
+var Container = connect(mapStateToProps,mapDispatchToProps,undefined,{withRef:true})(RestrauntsComponents);
 export default Container;
